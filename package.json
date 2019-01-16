@@ -1,0 +1,33 @@
+{
+  "name": "conditionize2",
+  "version": "2.0.0",
+  "description": "A jQuery plugin for conditional actions like show/hide on elements.",
+  "main": "jquery.conditionize2.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "minify": "./node_modules/.bin/uglifyjs jquery.conditionize2.js > jquery.conditionize2.min.js"
+  },
+  "pre-commit": [
+    "minify"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rguliev/conditionize2.js.git"
+  },
+  "keywords": [
+    "jquery",
+    "conditional"
+  ],
+  "author": "Rustam Guliev <glvrst@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rguliev/conditionize2.js/issues"
+  },
+  "homepage": "https://github.com/rguliev/conditionize2.js#readme",
+  "devDependencies": {
+    "pre-commit": "^1.2.2"
+  }
+}
