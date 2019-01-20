@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "minify": "./node_modules/.bin/uglifyjs jquery.conditionize2.js > jquery.conditionize2.min.js"
+    "minify": "./node_modules/.bin/uglifyjs jquery.conditionize2.js > jquery.conditionize2.min.js",
+    "lint": "./node_modules/.bin/eslint jquery.conditionize2.js"
   },
   "pre-commit": [
     "minify"
@@ -28,6 +29,8 @@
   },
   "homepage": "https://github.com/rguliev/conditionize2.js#readme",
   "devDependencies": {
+    "eslint": "^5.12.1",
+    "eslint-config-jquery": "^1.0.1",
     "pre-commit": "^1.2.2"
   }
 }
