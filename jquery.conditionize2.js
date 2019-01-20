@@ -1,17 +1,27 @@
-/* jquery - flexible conditionize - v1.2 - https://github.com/rguliev/conditionize.js - by Rustam Guliev at 2018-11-30*/
-(function($) {
+;(function($) {
   $.fn.conditionize = function(options) {
-
+    // Set options
     var settings = $.extend({
-        hideJS: true
+      // Array of events on which to update condition
+      updateOn: [ 'change' ],
+      // Initial action. By default: hide everything first
+      initialAction: function($section) {
+        $section.hide();
+      },
+      // Toggle visibility
+      showAndHide: true,
+      // Clear all input values
+      clearFields: false,
+      // Add your own custom handler. A function(is_met, $section) {...}
+      additionalHandler: false
     }, options );
 
-    $.fn.showOrHide = function(is_met, $section) {
-      if (is_met) {
-        $section.slideDown();
-      }
-      else {
-        $section.slideUp();
+    // Is function
+    function isFunction(obj) {
+      return (obj && {}.toString.call(obj) === '[object Function]');
+    }
+    // Clear all input values
+    var clearSection = function($section) {
         $section.find('select, input').each(function(){
             if ( ($(this).attr('type')=='radio') || ($(this).attr('type')=='checkbox') ) {
                 $(this).prop('checked', false).trigger('change');
@@ -20,6 +30,23 @@
                 $(this).val('').trigger('change');
             }
         });
+    }
+    // Main handler for a conditional section
+    var handler = function(is_met, $section, settings) {
+      if (settings.showAndHide) {
+        if (is_met) {
+          $section.slideDown();
+        }
+        else {
+          $section.slideUp();
+        }
+      }
+      if (settings.clearFields && !is_met) {
+        clearSection($section);
+      }
+      // if additionalHandler is a function
+      if (isFunction(settings.additionalHandler)) {
+        settings.additionalHandler(is_met, $section);
       }
     }
 
@@ -40,7 +67,6 @@
         }
         match = re.exec(cond);
       }
-      
       // Replace fields names/ids by $().val()
       for (name in inputs) {
         e = inputs[name];
@@ -52,20 +78,18 @@
           cond = cond.replace(tmp_re,"$('" + e + "').val()");
         }
       }
-      
-      //Set up event listeners
+      // Set up event listeners
       for (name in inputs) {
-        $(inputs[name]).on('change', function() {
-          $.fn.showOrHide(eval(cond), $section);
+        $(inputs[name]).on(updateOn.join(' '), function() {
+          handler(eval(cond), $section, settings);
         });
       }
-
-      //If setting was chosen, hide everything first...
-      if (settings.hideJS) {
-        $(this).hide();
+      // Apply initial action
+      if (isFunction(settings.initialAction)) {
+        settings.initialAction($section);
       }
-      //Show based on current value on page load
-      $.fn.showOrHide(eval(cond), $section);
+      // Apply handler based on current value on page load
+      handler(eval(cond), $section, settings);
     });
   }
 }(jQuery));
