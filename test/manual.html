@@ -197,14 +197,11 @@
                 var itemEscaped = item
                 var offset = parseInt(itemEscaped.search(/\S/));
                 var re = new RegExp( " {" + (offset-1) + "}( *)", "gi" );
-                console.log(itemEscaped.replace(re, '$1').replace(/^\n */g, ''));
                 itemEscaped = itemEscaped.replace(re, '$1').
                     replace(/^\n */g, '').
                     replace(/\s+$/g, '').
                     replace(/</g, "&lt;").
                     replace(/>/g, "&gt;")
-                console.log(itemEscaped.split(''));
-
                 $(this.parentNode).addClass(" w3-panel w3-card w3-light-grey w3-padding ")
                 $(this).before('<div class="w3-code htmlHigh notranslate"><pre>' + itemEscaped + '</pre></div>');
                 $(this).before('<h4>Result:</h4>');
