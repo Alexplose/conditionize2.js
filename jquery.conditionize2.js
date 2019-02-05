@@ -32,7 +32,7 @@
             var vals;
             // Radio buttons are a special case. They can not be multivalue fields.
             if ( $( selector ).attr( "type" ) === "radio" ) {
-                vals = $( selector + ':checked').val();
+                    vals = $( selector + ':checked').val();
             } else {
                 vals = $( selector ).map( function() {
                     if ( $( this ).attr( "type" ) === "checkbox" ) {
@@ -50,14 +50,13 @@
 
         // Prepare a regexp to catch potential field names/ids.
         var ifNotInQuotes = "(?:(?=([^\"]*\"[^\"]*\")*[^\"]*$)(?=([^']*'[^']*')*[^']*$))";
-        var allowedNameSymbols = "a-zA-Z0-9_\\-\\[\\]";
+        var allowedNameSymbols = "a-zA-Z0-9_\\[\\]-";
         var re = new RegExp( "(#?[" + allowedNameSymbols + "]+)" + ifNotInQuotes, "gi" );
 
         return this.each( function() {
             var $section = $( this );
             var cond = $( this ).data( "condition" );
             var allFields = []; // All fields in the condition
-
             // First get all (distinct) used field/inputs
             cond = cond.replace( re, function( match, group ) {
                 var selector = ( group.substring( 0, 1 ) === "#" ) ?
@@ -73,7 +72,6 @@
                 }
 
             } );
-
             //Set up event listeners
             allFields.forEach( function( field ) {
                 $( field ).on( "change", function() {

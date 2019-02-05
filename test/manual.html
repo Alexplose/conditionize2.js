@@ -210,6 +210,86 @@
             </div>
 
             <h2>Check that names/ids are parsed correctly</h2>
+            <div id="wierd-names">
+                <div class="case">
+                    <h4>Partially equal names</h4>
+                    <div class="item">
+                        <label>These two inputs must be independent</label>
+                        <input type="text" name="wierd-input-1" placeholder="foo">
+                        <input type="text" name="wierd-input-12" placeholder="bar">
+                        <p class="conditional" data-condition="wierd-input-1 === 'foo'">The first one is 'foo'</p>
+                        <p class="conditional" data-condition="wierd-input-12 === 'bar'">The second one is 'bar'</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Partially equal ids</h4>
+                    <div class="item">
+                        <label>These two inputs must be independent</label>
+                        <input type="text" id="wierd-input-1" placeholder="foo">
+                        <input type="text" id="wierd-input-12" placeholder="bar">
+                        <p class="conditional" data-condition="#wierd-input-1 === 'foo'">The first one is 'foo'</p>
+                        <p class="conditional" data-condition="#wierd-input-12 === 'bar'">The second one is 'bar'</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Allowed symbols in name</h4>
+                    <div class="item">
+                        <label>An input with all allowed input symbols</label>
+                        <input type="text" name="-some_input-WITH_all-SyMBolS-___-" placeholder="foo">
+                        <p class="conditional" data-condition="-some_input-WITH_all-SyMBolS-___- === 'foo'">Works!</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Allowed symbols in id</h4>
+                    <div class="item">
+                        <label>An input with all allowed input symbols</label>
+                        <input type="text" id="-some_input-WITH_all-SyMBolS-___-" placeholder="foo">
+                        <p class="conditional" data-condition="#-some_input-WITH_all-SyMBolS-___- === 'foo'">Works!</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Check complicated conditions</h2>
+            <div id="conditions">
+                <div class="case">
+                    <h4>No space and no parentheses</h4>
+                    <div class="item">
+                        <label><input type="checkbox" name="complicated-checkbox1" value="3">Check me</label>
+                        <p class="conditional" data-condition="complicated-checkbox1==='3'"></p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Use functions</h4>
+                    <div class="item">
+                        <label><input type="text" name="complicated-input1">Type a number greater than 10 </label>
+                        <p class="conditional" data-condition="parseInt(complicated-input1)>10">Wow! Too mush!</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Combine many inputs</h4>
+                    <div class="item">
+                        <label><input type="checkbox" id="combined-item1">Check me</label>
+                        <br>
+                        <label>Are you tired?</label>
+                        <label><input type="radio" name="combined-item2" value="yes">Yes</label>
+                        <label><input type="radio" name="combined-item2" value="no">No</label>
+                        <br>
+                        <label><input type="text" name="combined-item3">Type a number which square is less than 100 </label>
+                        <p class="conditional" data-condition="#combined-item1 && ( combined-item2==='yes' || parseInt(combined-item3)*parseInt(combined-item3)<100)">You are whether tired or know some math:)</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Array functions</h4>
+                    <div class="item">
+                        <label>Your favorite movie 1</label><input type="text" name="favorite_movie[]">
+                        <label>Your favorite movie 2</label><input type="text" name="favorite_movie[]">
+                        <label>Your favorite movie 3</label><input type="text" name="favorite_movie[]">
+                        <p class="conditional" data-condition="favorite_movie[].every(x => x !== '')">You wrote three movies.</p>
+                        <p class="conditional" data-condition="favorite_movie[].some(x => x.toLowerCase() === 'zootopia')">I like Zootopia too.</p>
+                        <p class="conditional" data-condition="favorite_movie[].filter(x => x !== '').length > 1">More than one movie. Not bad.</p>
+                    </div>
+                </div>
+            </div>
         </div>
         <script src="https://www.w3schools.com/lib/w3codecolor.js"></script>
         <script>
