@@ -118,57 +118,79 @@
             </div>
 
             <h3>Selects</h3>
-            <div class="case">
-                <h4>Reference by id:</h4>
-                <div class="item">
-                    <label>Select one</label>
-                    <select id="select1">
-                        <option value=""></option>
-                        <option value="one">One</option>
-                        <option value="two">Two</option>
-                    </select>
-                    <p class="conditional" data-condition="#select1 === 'one'">Nice choice!</p>
+            <div id="selects">
+                <div class="case">
+                    <h4>Reference by id:</h4>
+                    <div class="item">
+                        <label>Select one</label>
+                        <select id="select1">
+                            <option value=""></option>
+                            <option value="one">One</option>
+                            <option value="two">Two</option>
+                        </select>
+                        <p class="conditional" data-condition="#select1 === 'one'">Nice choice!</p>
+                    </div>
                 </div>
-            </div>
-            <div class="case">
-                <h4>Reference by name:</h4>
-                <div class="item">
-                    <label>Select2</label>
-                    <select name="select2">
-                        <option value=""></option>
-                        <option value="one">One</option>
-                        <option value="two">Two</option>
-                    </select>
-                    <p class="conditional" data-condition="select2 === 'two'">Makes sense!</p>
+                <div class="case">
+                    <h4>Reference by name:</h4>
+                    <div class="item">
+                        <label>Select2</label>
+                        <select name="select2">
+                            <option value=""></option>
+                            <option value="one">One</option>
+                            <option value="two">Two</option>
+                        </select>
+                        <p class="conditional" data-condition="select2 === 'two'">Makes sense!</p>
+                    </div>
                 </div>
-            </div>
-            <div class="case">
-                <h4>Select with initial value:</h4>
-                <div class="item">
-                    <label>Select3</label>
-                    <select name="select3">
-                        <option value=""></option>
-                        <option value="one">One</option>
-                        <option value="two" selected>Two</option>
-                    </select>
-                    <p class="conditional" data-condition="select3 === 'two'">Toggle me</p>
+                <div class="case">
+                    <h4>Select with initial value:</h4>
+                    <div class="item">
+                        <label>Select3</label>
+                        <select name="select3">
+                            <option value=""></option>
+                            <option value="one">One</option>
+                            <option value="two" selected>Two</option>
+                        </select>
+                        <p class="conditional" data-condition="select3 === 'two'">Toggle me</p>
+                    </div>
                 </div>
-            </div>
-            <div class="case">
-                <h4>Select with multiple attribute:</h4>
-                <div class="item">
-                    <label>Select two</label>
-                    <select name="select4" multiple>
-                        <option value=""></option>
-                        <option value="one">One</option>
-                        <option value="two">Two</option>
-                        <option value="three">Three</option>
-                    </select>
-                    <p class="conditional" data-condition="(select4).indexOf('two') !== -1">Don't you tiered of 'two's?</p>
+                <div class="case">
+                    <h4>Select with multiple attribute:</h4>
+                    <div class="item">
+                        <label>Select two</label>
+                        <select name="select4" multiple>
+                            <option value=""></option>
+                            <option value="one">One</option>
+                            <option value="two">Two</option>
+                            <option value="three">Three</option>
+                        </select>
+                        <p class="conditional" data-condition="(select4).indexOf('two') !== -1">Don't you tiered of 'two's?</p>
+                    </div>
                 </div>
             </div>
 
             <h3>Radio buttons</h3>
+            <div id="radiobuttons">
+                <div class="case">
+                    <h4>Reference by name</h4>
+                    <div class="item">
+                        <label>Do you want to see a smile?</label>
+                        <label><input type="radio" name="radio1" value="yes">Yes</label>
+                        <label><input type="radio" name="radio1" value="no">No</label>
+                    </div>
+                    <p class="conditional" data-condition="radio1 === 'yes'">:)</p>
+                </div>
+                <div class="case">
+                    <h4>Radio button with an inital value</h4>
+                    <div class="item">
+                        <label>2+2=</label>
+                        <label><input type="radio" name="radio2" value="4">4</label>
+                        <label><input type="radio" name="radio2" value="6" checked>6</label>
+                        <p class="conditional" data-condition="radio2 !== '4'">So bad at math?</p>
+                    </div>
+                </div>
+            </div>
             <h3>Combined/nested</h3>
             <div id="nested">
                     <div class="case">
@@ -212,6 +234,7 @@
             // Styling
             $("input[type='checkbox']").addClass('w3-check');
             $("input[type='text']").addClass('w3-input');
+            $("input[type='radio']").addClass('w3-radio');
             $("select").addClass('w3-select');
             $("p.conditional").addClass('msg');
         </script>

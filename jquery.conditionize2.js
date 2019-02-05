@@ -29,19 +29,23 @@
          * @return {(string|Array)} A value of the field or an array values for each field if there are more than one matching inputs
          */
         function getValue( selector ) {
-            var vals = $( selector ).map( function() {
-                if ( ( $( this ).attr( "type" ) === "radio" ) ||
-                     ( $( this ).attr( "type" ) === "checkbox" ) ) {
-                    return this.checked ? this.value : false;
-                } else {
-                    return $( this ).val();
-                }
-            } ).get();
-            if ( vals.length === 1 ) {
-                return vals[ 0 ];
+            var vals;
+            // Radio buttons are a special case. They can not be multivalue fields.
+            if ( $( selector ).attr( "type" ) === "radio" ) {
+                vals = $( selector + ':checked').val();
             } else {
-                return vals;
+                vals = $( selector ).map( function() {
+                    if ( $( this ).attr( "type" ) === "checkbox" ) {
+                        return this.checked ? this.value : false;
+                    } else {
+                        return $( this ).val();
+                    }
+                } ).get();
+                if ( vals.length === 1 ) {
+                    vals = vals[ 0 ];
+                }
             }
+            return vals;
         };
 
         // Prepare a regexp to catch potential field names/ids.
