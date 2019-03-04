@@ -1,95 +1,91 @@
-;(function($) {
-  $.fn.conditionize = function(options) {
-    // Set options
-    var settings = $.extend({
-      // Array of events on which to update condition
-      updateOn: [ 'change' ],
-      // Initial action. By default: hide everything first
-      initialAction: function($section) {
-        $section.hide();
-      },
-      // Toggle visibility
-      showAndHide: true,
-      // Clear all input values
-      clearFields: false,
-      // Add your own custom handler. A function(is_met, $section) {...}
-      additionalHandler: false
-    }, options );
+( function( $ ) {
+    $.fn.conditionize = function( options ) {
 
-    // Is function
-    function isFunction(obj) {
-      return (obj && {}.toString.call(obj) === '[object Function]');
-    }
-    // Clear all input values
-    var clearSection = function($section) {
-        $section.find('select, input').each(function(){
-            if ( ($(this).attr('type')=='radio') || ($(this).attr('type')=='checkbox') ) {
-                $(this).prop('checked', false).trigger('change');
-            }
-            else{
-                $(this).val('').trigger('change');
-            }
-        });
-    }
-    // Main handler for a conditional section
-    var handler = function(is_met, $section, settings) {
-      if (settings.showAndHide) {
-        if (is_met) {
-          $section.slideDown();
-        }
-        else {
-          $section.slideUp();
-        }
-      }
-      if (settings.clearFields && !is_met) {
-        clearSection($section);
-      }
-      // if additionalHandler is a function
-      if (isFunction(settings.additionalHandler)) {
-        settings.additionalHandler(is_met, $section);
-      }
-    }
+        var settings = $.extend( {
+            hideJS: true
+        }, options );
 
-    return this.each( function() {
-      var $section = $(this);
-      var cond = $(this).data('condition');
-      // This is a regex suffix that will make sure that the string is not inside quotes
-      var ifNotInQuotes = "(?:(?=([^\"]*\"[^\"]*\")*[^\"]*$)(?=([^']*'[^']*')*[^']*$))";
-      // First get all (distinct) used field/inputs
-      var re = new RegExp("(#?[0-9a-z-_]*[a-z][0-9a-z-_]*)" + ifNotInQuotes, 'gi');
-      var match = re.exec(cond);
-      var inputs = {}, e = "", name ="", tmp_re = "";
-      while(match !== null) {
-        name = match[1];
-        e = (name.substring(0,1)=='#' ? name : "[name=" + name + "]");
-        if ( $(e).length && ! (name in inputs) ) {
-            inputs[name] = e;
-        }
-        match = re.exec(cond);
-      }
-      // Replace fields names/ids by $().val()
-      for (name in inputs) {
-        e = inputs[name];
-        tmp_re = new RegExp("(" + name + ")\\b" + ifNotInQuotes, 'g')
-        if ( ($(e).attr('type')=='radio') || ($(e).attr('type')=='checkbox') ) {
-          cond = cond.replace(tmp_re,"$('" + e + ":checked').val()");
-        }
-        else {
-          cond = cond.replace(tmp_re,"$('" + e + "').val()");
-        }
-      }
-      // Set up event listeners
-      for (name in inputs) {
-        $(inputs[name]).on(updateOn.join(' '), function() {
-          handler(eval(cond), $section, settings);
-        });
-      }
-      // Apply initial action
-      if (isFunction(settings.initialAction)) {
-        settings.initialAction($section);
-      }
-      // Apply handler based on current value on page load
-      handler(eval(cond), $section, settings);
-    });
-  }
-}(jQuery));
+        $.fn.showOrHide = function( isMet, $section ) {
+          if ( isMet ) {
+            $section.slideDown();
+          } else {
+            $section.slideUp();
+            $section.find( "select, input" ).each( function() {
+                if ( ( $( this ).attr( "type" ) === "radio" ) ||
+                     ( $( this ).attr( "type" ) === "checkbox" ) ) {
+                    $( this ).prop( "checked", false ).trigger( "change" );
+                } else {
+                    $( this ).val( "" ).trigger( "change" );
+                }
+            } );
+          }
+        };
+
+        /**
+         * Get value(s) of a field by its selector
+         *
+         * @param {string} selector A string containing a standard jQuery selector expression
+         *
+         * @return {(string|Array)} A value of the field or an array values for each field if there are more than one matching inputs
+         */
+        function getValue( selector ) {
+            var vals;
+            // Radio buttons are a special case. They can not be multivalue fields.
+            if ( $( selector ).attr( "type" ) === "radio" ) {
+                    vals = $( selector + ':checked').val();
+            } else {
+                vals = $( selector ).map( function() {
+                    if ( $( this ).attr( "type" ) === "checkbox" ) {
+                        return this.checked ? this.value : false;
+                    } else {
+                        return $( this ).val();
+                    }
+                } ).get();
+                if ( vals.length === 1 ) {
+                    vals = vals[ 0 ];
+                }
+            }
+            return vals;
+        };
+
+        // Prepare a regexp to catch potential field names/ids.
+        var ifNotInQuotes = "(?:(?=([^\"]*\"[^\"]*\")*[^\"]*$)(?=([^']*'[^']*')*[^']*$))";
+        var allowedNameSymbols = "a-zA-Z0-9_\\[\\]-";
+        var re = new RegExp( "(#?[" + allowedNameSymbols + "]+)" + ifNotInQuotes, "gi" );
+
+        return this.each( function() {
+            var $section = $( this );
+            var cond = $( this ).data( "condition" );
+            var allFields = []; // All fields in the condition
+            // First get all (distinct) used field/inputs
+            cond = cond.replace( re, function( match, group ) {
+                var selector = ( group.substring( 0, 1 ) === "#" ) ?
+                    group :
+                    "[name='" + group + "']";
+                if ( $( selector ).length ) {
+                    if ( allFields.indexOf( selector ) === -1 ) {
+                        allFields.push( selector );
+                    }
+                    return "getValue(\"" + selector + "\")";
+                } else {
+                    return group;
+                }
+
+            } );
+            //Set up event listeners
+            allFields.forEach( function( field ) {
+                $( field ).on( "change", function() {
+                  $.fn.showOrHide( eval( cond ), $section );
+                } );
+            } );
+
+            //If setting was chosen, hide everything first...
+            if ( settings.hideJS ) {
+                $( this ).hide();
+            }
+
+            //Show based on current value on page load
+            $.fn.showOrHide( eval( cond ), $section );
+        } );
+    };
+} )( jQuery );

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <title>Conditionize2. A jQuery plugin for conditioning things</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="../jquery.conditionize2.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('.conditional').conditionize();
+            });
+        </script>
+        <style type="text/css">
+            .msg {
+                display: block;
+                color: #000!important;
+                background-color: #ffdddd!important;
+                border-left: 6px solid #f44336!important;
+                margin: 16px auto;
+                padding: 1em 16px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="w3-container w3-blue-grey w3-padding">
+            <h1><code class="w3-codespan">conditionize2</code>. A jQuery plugin for conditioning things</h1>
+
+            <h2>Try different input types</h2>
+            
+            <h3>Inputs</h3>
+            <div id="inputs">
+                <div class="case">
+                    <h4>Reference by id:</h4>
+                    <div class="item">
+                        <label>text input with id</label><input type="text" id="text-input1">
+                        <p class="conditional" data-condition="#text-input1 === 'one'">You just typed 'one'!</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Reference by name:</h4>
+                    <div class="item">
+                        <label>text input with name</label><input type="text" name="text-input2">
+                        <p class="conditional" data-condition="text-input2 === 'two'">You just typed 'two'</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Input with initial value:</h4>
+                    <div class="item">
+                        <label>text input with initial value</label><input type="text" name="text-input3" value="three">
+                        <p class="conditional" data-condition="text-input3 === 'three'">You just typed 'three'</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Space and non-ACII chars at the condition</h4>
+                    <div class="item">
+                        <label>text input</label><input type="text" name="text-input5">
+                        <p class="conditional" data-condition="text-input5 === 'не ACII строка'">Wow! Even non-ACII chars are ok!</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Multivalue input</h4>
+                    <div class="item">
+                        <label>Favorite book 1</label><input type="text" name="favorite_book[]">
+                        <label>Favorite book 2</label><input type="text" name="favorite_book[]">
+                        <label>Favorite book 3</label><input type="text" name="favorite_book[]">
+                        <p class="conditional" data-condition="favorite_book[].every(x=>x !== '')">You read too much:)</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Checkboxes</h3>
+            <div id="checkboxes">
+                <div class="case">
+                    <h4>Reference by id:</h4>
+                    <div class="item">
+                        <label><input type="checkbox" id="checkbox1">checkbox with id</label>
+                        <p class="conditional" data-condition="#checkbox1">Wow! You just checked me!</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Reference by name:</h4>
+                    <div class="item">
+                        <label><input type="checkbox" name="checkbox2">checkbox with name</label>
+                        <p class="conditional" data-condition="checkbox2">Wow! You just checked me!</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Checkbox with value attribute:</h4>
+                    <div  class="item">
+                        <label><input type="checkbox" name="checkbox3" value="3">checkbox with name and initial value</label>
+                        <p class="conditional" data-condition="checkbox3 === '3'">Wow! You just checked me!</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Initially checked checkbox:</h4>
+                    <div class="item">
+                        <label><input type="checkbox" name="checkbox4" checked>checkbox checked initially</label>
+                        <p class="conditional" data-condition="checkbox4">I was here initially or you just checked me:)</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Negative condition</h4>
+                    <div class="item">
+                        <label><input type="checkbox" name="checkbox5" checked>checkbox for negative condition</label>
+                        <p class="conditional" data-condition="! checkbox5">Check it if you want me to disappear</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Multivalue checkbox:</h4>
+                    <div class="item">
+                        <label><input type="checkbox" name="multivalue-checkbox" value="1" checked>Option1</label>
+                        <label><input type="checkbox" name="multivalue-checkbox" value="2">Option2</label>
+                        <label><input type="checkbox" name="multivalue-checkbox" value="3" checked>Option3</label>
+                        <p class="conditional" data-condition="multivalue-checkbox.indexOf('2') !== -1">You checked option2! I saw it!</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Selects</h3>
+            <div id="selects">
+                <div class="case">
+                    <h4>Reference by id:</h4>
+                    <div class="item">
+                        <label>Select one</label>
+                        <select id="select1">
+                            <option value=""></option>
+                            <option value="one">One</option>
+                            <option value="two">Two</option>
+                        </select>
+                        <p class="conditional" data-condition="#select1 === 'one'">Nice choice!</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Reference by name:</h4>
+                    <div class="item">
+                        <label>Select2</label>
+                        <select name="select2">
+                            <option value=""></option>
+                            <option value="one">One</option>
+                            <option value="two">Two</option>
+                        </select>
+                        <p class="conditional" data-condition="select2 === 'two'">Makes sense!</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Select with initial value:</h4>
+                    <div class="item">
+                        <label>Select3</label>
+                        <select name="select3">
+                            <option value=""></option>
+                            <option value="one">One</option>
+                            <option value="two" selected>Two</option>
+                        </select>
+                        <p class="conditional" data-condition="select3 === 'two'">Toggle me</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Select with multiple attribute:</h4>
+                    <div class="item">
+                        <label>Select two</label>
+                        <select name="select4" multiple>
+                            <option value=""></option>
+                            <option value="one">One</option>
+                            <option value="two">Two</option>
+                            <option value="three">Three</option>
+                        </select>
+                        <p class="conditional" data-condition="(select4).indexOf('two') !== -1">Don't you tiered of 'two's?</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Radio buttons</h3>
+            <div id="radiobuttons">
+                <div class="case">
+                    <h4>Reference by name</h4>
+                    <div class="item">
+                        <label>Do you want to see a smile?</label>
+                        <label><input type="radio" name="radio1" value="yes">Yes</label>
+                        <label><input type="radio" name="radio1" value="no">No</label>
+                    </div>
+                    <p class="conditional" data-condition="radio1 === 'yes'">:)</p>
+                </div>
+                <div class="case">
+                    <h4>Radio button with an inital value</h4>
+                    <div class="item">
+                        <label>2+2=</label>
+                        <label><input type="radio" name="radio2" value="4">4</label>
+                        <label><input type="radio" name="radio2" value="6" checked>6</label>
+                        <p class="conditional" data-condition="radio2 !== '4'">So bad at math?</p>
+                    </div>
+                </div>
+            </div>
+            <h3>Combined/nested</h3>
+            <div id="nested">
+                    <div class="case">
+                    <h4>You can even nest the conditional sections:</h4>
+                    <div class="item">
+                        <label><input type="checkbox" name="nested-level1">Are you sure?</label>
+                        <div class="conditional" data-condition="nested-level1">
+                            <label><input type="checkbox" name="nested-level2"> Really super sure?</label>
+                            <div class="conditional" data-condition="nested-level2">
+                                <label>Then type "foo": </label>
+                                <input type="text" name="nested-level3" placeholder="foo">
+                                <p class="conditional" data-condition="nested-level3 === 'foo'">Both are checked and 'foo' is typed.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Check that names/ids are parsed correctly</h2>
+            <div id="wierd-names">
+                <div class="case">
+                    <h4>Partially equal names</h4>
+                    <div class="item">
+                        <label>These two inputs must be independent</label>
+                        <input type="text" name="wierd-input-1" placeholder="foo">
+                        <input type="text" name="wierd-input-12" placeholder="bar">
+                        <p class="conditional" data-condition="wierd-input-1 === 'foo'">The first one is 'foo'</p>
+                        <p class="conditional" data-condition="wierd-input-12 === 'bar'">The second one is 'bar'</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Partially equal ids</h4>
+                    <div class="item">
+                        <label>These two inputs must be independent</label>
+                        <input type="text" id="wierd-input-1" placeholder="foo">
+                        <input type="text" id="wierd-input-12" placeholder="bar">
+                        <p class="conditional" data-condition="#wierd-input-1 === 'foo'">The first one is 'foo'</p>
+                        <p class="conditional" data-condition="#wierd-input-12 === 'bar'">The second one is 'bar'</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Allowed symbols in name</h4>
+                    <div class="item">
+                        <label>An input with all allowed input symbols</label>
+                        <input type="text" name="-some_input-WITH_all-SyMBolS-___-" placeholder="foo">
+                        <p class="conditional" data-condition="-some_input-WITH_all-SyMBolS-___- === 'foo'">Works!</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Allowed symbols in id</h4>
+                    <div class="item">
+                        <label>An input with all allowed input symbols</label>
+                        <input type="text" id="-some_input-WITH_all-SyMBolS-___-" placeholder="foo">
+                        <p class="conditional" data-condition="#-some_input-WITH_all-SyMBolS-___- === 'foo'">Works!</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Check complicated conditions</h2>
+            <div id="conditions">
+                <div class="case">
+                    <h4>No space and no parentheses</h4>
+                    <div class="item">
+                        <label><input type="checkbox" name="complicated-checkbox1" value="3">Check me</label>
+                        <p class="conditional" data-condition="complicated-checkbox1==='3'"></p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Use functions</h4>
+                    <div class="item">
+                        <label><input type="text" name="complicated-input1">Type a number greater than 10 </label>
+                        <p class="conditional" data-condition="parseInt(complicated-input1)>10">Wow! Too mush!</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Combine many inputs</h4>
+                    <div class="item">
+                        <label><input type="checkbox" id="combined-item1">Check me</label>
+                        <br>
+                        <label>Are you tired?</label>
+                        <label><input type="radio" name="combined-item2" value="yes">Yes</label>
+                        <label><input type="radio" name="combined-item2" value="no">No</label>
+                        <br>
+                        <label><input type="text" name="combined-item3">Type a number which square is less than 100 </label>
+                        <p class="conditional" data-condition="#combined-item1 && ( combined-item2==='yes' || parseInt(combined-item3)*parseInt(combined-item3)<100)">You are whether tired or know some math:)</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Array functions</h4>
+                    <div class="item">
+                        <label>Your favorite movie 1</label><input type="text" name="favorite_movie[]">
+                        <label>Your favorite movie 2</label><input type="text" name="favorite_movie[]">
+                        <label>Your favorite movie 3</label><input type="text" name="favorite_movie[]">
+                        <p class="conditional" data-condition="favorite_movie[].every(x => x !== '')">You wrote three movies.</p>
+                        <p class="conditional" data-condition="favorite_movie[].some(x => x.toLowerCase() === 'zootopia')">I like Zootopia too.</p>
+                        <p class="conditional" data-condition="favorite_movie[].filter(x => x !== '').length > 1">More than one movie. Not bad.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://www.w3schools.com/lib/w3codecolor.js"></script>
+        <script>
+            // Add html code to each example
+            $('div.item').each( function() {
+                var item = $(this).html();
+                var itemEscaped = item
+                var offset = parseInt(itemEscaped.search(/\S/));
+                var re = new RegExp( " {" + (offset-1) + "}( *)", "gi" );
+                itemEscaped = itemEscaped.replace(re, '$1').
+                    replace(/^\n */g, '').
+                    replace(/\s+$/g, '').
+                    replace(/</g, "&lt;").
+                    replace(/>/g, "&gt;")
+                $(this.parentNode).addClass(" w3-panel w3-card w3-light-grey w3-padding ")
+                $(this).before('<div class="w3-code htmlHigh notranslate"><pre>' + itemEscaped + '</pre></div>');
+                $(this).before('<h4>Result:</h4>');
+            } );
+            w3CodeColor();
+        </script>
+        <script>
+            // Styling
+            $("input[type='checkbox']").addClass('w3-check');
+            $("input[type='text']").addClass('w3-input');
+            $("input[type='radio']").addClass('w3-radio');
+            $("select").addClass('w3-select');
+            $("p.conditional").addClass('msg');
+        </script>
+    </body>
+</html>
