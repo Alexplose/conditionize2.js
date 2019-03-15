@@ -5,25 +5,57 @@
         var settings = $.extend( {
 
             // Array of events on which to update condition
-            updateOn: [ "change" ],
+            updateOn: ["load", "change"],
 
-            // Main handler for a conditional section
-            handlers: [ "toggleVisibility" ]
+            // Set actions for condition
+            ifTrue: 'show',
+            ifFalse: 'hide'
         }, options );
+
+        // Prepare and validate settings
+        // TODO: Validate types
+        // TODO: Validate that actions exist
+        if (Array.isArray(settings.updateOn)) {
+            settings.updateOn = settings.updateOn.join(' ');
+        }
+        if ((typeof settings.ifTrue === "string") ||
+            (typeof settings.ifTrue === "function")) {
+            settings.ifTrue = [ settings.ifTrue ];
+        }
+        if ((typeof settings.ifFalse === "string") ||
+            (typeof settings.ifFalse === "function")) {
+            settings.ifFalse = [ settings.ifFalse ];
+        }
 
         // Main handler for a conditional section
         var handler = function( isMet, $section ) {
-            settings.handlers.forEach(
+            var actions;
+            if (isMet) {
+                actions = settings.ifTrue;
+            } else {
+                actions = settings.ifFalse;
+            }
+
+            actions.forEach(
                 function( h ) {
-                    if ( ( typeof h === "string" ) && $.fn.conditionize.handlers[ h ] ) {
-                        $.fn.conditionize.handlers[ h ]( isMet, $section );
+                    if ( typeof h === "string" ) {
+                        if ( h.startsWith("trigger") ) {
+                            if (h === "trigger") {
+                                $.fn.conditionize.actions[ h ]( $section, settings.updateOn );
+                            } else {
+                                $.fn.conditionize.actions[ h ]( $section, h.slice(8).split(/[\s,]+/) );
+                            }
+                        } else {
+                            $.fn.conditionize.actions[ h ]( $section );
+                        }
                     } else {
                         if ( typeof h === "function" ) {
-                            h( isMet, $section );
+                            h( $section );
                         }
                     }
-                } );
-            };
+                }
+            );
+        };
 
         return this.each( function() {
             var $section = $( this );
@@ -47,23 +79,34 @@
 
             //Set up event listeners
             allFields.forEach( function( field ) {
-                $( field ).on( settings.updateOn.join( " " ), function() {
+                $( field ).on( settings.updateOn, function() {
                   handler( eval( cond ), $section );
                 } );
             } );
 
-            //console.log($section);
-            //console.log(cond);
             //Show based on current value on page load
-            handler( eval( cond ), $section );
+            if (settings.updateOn.split(' ').indexOf('load') !== -1) {
+                // If already loaded
+                if (document.readyState === 'complete') {
+                    handler( eval( cond ), $section );
+                } else {
+                    $(window).on('load', function(){
+                        handler( eval( cond ), $section );
+                    });
+                }
+            }
+            if (settings.updateOn.split(' ').indexOf('ready') !== -1) {
+                $(document).ready(function(){
+                    handler( eval( cond ), $section );
+                });
+            }
         } );
     };
 
     $.extend( $.fn.conditionize, {
-
         // Prepare a regexp to catch potential field names/ids.
         // Regexp has format like: "(#?[" + allowedNameSymbols + "]+)" + ifNotInQuotes
-        "re": new RegExp( "(#?[a-z0-9_\\[\\]-]+)" +
+        re: new RegExp( "(#?[a-z0-9_\\[\\]-]+)" +
             "(?:(?=([^\"]*\"[^\"]*\")*[^\"]*$)(?=([^']*'[^']*')*[^']*$))", "gi" ),
 
         /**
@@ -94,29 +137,30 @@
             return vals;
         },
 
-        // Build-in handlers
-        "handlers": {
-            toggleVisibility: function( isMet, $section ) {
-                if ( isMet ) {
-                    $section.slideDown();
-                } else {
-                    $section.slideUp();
-                }
+        // Build-in actions
+        actions: {
+            show : function ($section) {
+                $section.slideDown();
             },
-            clearFieldsIfNotMet: function( isMet, $section ) {
-                if ( !isMet ) {
-                    $section.find( "select, input" ).each( function() {
-                        if ( ( $( this ).attr( "type" ) === "radio" ) ||
-                             ( $( this ).attr( "type" ) === "checkbox" ) ) {
-                            $( this ).prop( "checked", false ).trigger( "change" );
-                        } else {
-                            $( this ).val( "" ).trigger( "change" );
-                        }
-                    } );
-                }
+            hide: function ($section) {
+                $section.slideUp();
             },
-            clearFieldsIfMet: function( isMet, $section ) {
-                this.clearFieldsIfNotMet( !isMet, $section );
+            clear: function($section) {
+                $section.find( "select, input" ).each( function() {
+                    if ( ( $( this ).attr( "type" ) === "radio" ) ||
+                         ( $( this ).attr( "type" ) === "checkbox" ) ) {
+                        $( this ).prop( "checked", false )
+                    } else {
+                        $( this ).val( "" );
+                    }
+                    $( this ).trigger( "change" )
+                } );
+            },
+            trigger: function($section, events) {
+                if (Array.isArray(events)) {
+                    events = events.join(' ');
+                }
+                $section.trigger(events);
             }
         }
     } );

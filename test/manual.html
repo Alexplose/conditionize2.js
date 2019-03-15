@@ -33,28 +33,28 @@
                 <div class="case">
                     <h4>Reference by id:</h4>
                     <div class="item">
-                        <label>text input with id</label><input type="text" id="text-input1">
+                        <label>text input with id</label><input type="text" id="text-input1" placeholder="one">
                         <p class="conditional" data-condition="#text-input1 === 'one'">You just typed 'one'!</p>
                     </div>
                 </div>
                 <div class="case">
                     <h4>Reference by name:</h4>
                     <div class="item">
-                        <label>text input with name</label><input type="text" name="text-input2">
+                        <label>text input with name</label><input type="text" name="text-input2" placeholder="two">
                         <p class="conditional" data-condition="text-input2 === 'two'">You just typed 'two'</p>
                     </div>
                 </div>
                 <div class="case">
                     <h4>Input with initial value:</h4>
                     <div class="item">
-                        <label>text input with initial value</label><input type="text" name="text-input3" value="three">
+                        <label>text input with initial value</label><input type="text" name="text-input3" value="three" placeholder="three">
                         <p class="conditional" data-condition="text-input3 === 'three'">You just typed 'three'</p>
                     </div>
                 </div>
                 <div class="case">
                     <h4>Space and non-ACII chars at the condition</h4>
                     <div class="item">
-                        <label>text input</label><input type="text" name="text-input5">
+                        <label>text input</label><input type="text" name="text-input5" placeholder="не ACII строка">
                         <p class="conditional" data-condition="text-input5 === 'не ACII строка'">Wow! Even non-ACII chars are ok!</p>
                     </div>
                 </div>
@@ -191,6 +191,7 @@
                     </div>
                 </div>
             </div>
+
             <h3>Combined/nested</h3>
             <div id="nested">
                     <div class="case">
@@ -290,6 +291,90 @@
                     </div>
                 </div>
             </div>
+
+            <h2>Different options</h2>
+
+            <h3>Update events</h3>
+            <div id="update-events">
+                <div class="case">
+                    <h4>Set an event for conditions update by string</h4>
+                    <div class="item">
+                        <label><input type="text" name="input-onkeyup" placeholder="foo"></label>
+                        <p class="conditional-keyup" data-condition="input-onkeyup==='foo'">Works with keyup! You must see it initially because 'load' is not presented in 'updateOn'.</p>
+                        <script>
+                            $('p.conditional-keyup').conditionize({
+                                updateOn:'keyup'
+                            });
+                        </script>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Set an event for conditions update by string</h4>
+                    <div class="item">
+                        <label><input type="text" name="input-onkeyup2" placeholder="foo"></label>
+                        <p class="conditional-keyup2" data-condition="input-onkeyup2==='foo'">Works with keyup array! You must see it initially because 'load' is not presented in 'updateOn'.</p>
+                        <script>
+                            $('p.conditional-keyup2').conditionize({
+                                updateOn: ['keyup']
+                            });
+                        </script>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Many events</h4>
+                    <div class="item">
+                        <label><input type="text" name="input-onkeyup3" placeholder="foo"></label>
+                        <p class="conditional-keyup3" data-condition="input-onkeyup3==='foo'">Works with many events in one string!</p>
+                        <script>
+                            $('p.conditional-keyup3').conditionize({
+                                updateOn:['change', 'mouseleave', 'load']
+                            });
+                        </script>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Custom event</h4>
+                    <div class="item">
+                        <button id="button-custom">Update!</button>
+                        <label><input type="checkbox" id="options_checkbox1">Some checkbox. You can toggle it. Id does not work without the button.</label>
+                        <p class="conditional-custom" data-condition="#options_checkbox1">This one will be updated only after the button click!</p>
+                        <script>
+                            $('#button-custom').click(function(){
+                                $('#options_checkbox1').trigger({
+                                    type: "buttonWasClicked",
+                                    message: "The button was clicked"
+                                });
+                            });
+                            $('p.conditional-custom').conditionize({
+                                updateOn:['load', 'buttonWasClicked']
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Handler actions</h3>
+            <div id="handler-actions">
+                <div class="case">
+                    <h4>Use custom actions</h4>
+                    <div class="item">
+                        <label><input type="checkbox" id="actions_checkbox1">Toggle to see alerts</label>
+                        <p class="conditional-alert" data-condition="#actions_checkbox1">This text will not be affected.</p>
+                        <script>
+                            $('.conditional-alert').conditionize({
+                                updateOn: 'change',
+                                ifTrue: function($section) {
+                                    alert('I saw it! You just checked the checkbox!');
+                                    console.log($section);
+                                },
+                                ifFalse: function($section) {
+                                    alert('I saw it! You just unchecked the checkbox!');
+                                    console.log($section);
+                                }
+                            });
+                        </script>
+                    </div>
+                </div>
         </div>
         <script src="https://www.w3schools.com/lib/w3codecolor.js"></script>
         <script>
@@ -316,7 +401,7 @@
             $("input[type='text']").addClass('w3-input');
             $("input[type='radio']").addClass('w3-radio');
             $("select").addClass('w3-select');
-            $("p.conditional").addClass('msg');
+            $('p[class^="conditional"]').addClass('msg');
         </script>
     </body>
 </html>
