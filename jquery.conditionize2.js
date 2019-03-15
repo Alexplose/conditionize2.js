@@ -5,32 +5,55 @@
         var settings = $.extend( {
 
             // Array of events on which to update condition
-            updateOn: ["load", "change"],
+            updateOn: [ "change" ],
+            // Update on page load
+            onload: true,
 
             // Set actions for condition
-            ifTrue: 'show',
-            ifFalse: 'hide'
+            ifTrue: "show",
+            ifFalse: "hide"
         }, options );
 
         // Prepare and validate settings
-        // TODO: Validate types
-        // TODO: Validate that actions exist
-        if (Array.isArray(settings.updateOn)) {
-            settings.updateOn = settings.updateOn.join(' ');
+        if ( Array.isArray( settings.updateOn ) ) {
+            settings.updateOn = settings.updateOn.join( " " );
         }
-        if ((typeof settings.ifTrue === "string") ||
-            (typeof settings.ifTrue === "function")) {
-            settings.ifTrue = [ settings.ifTrue ];
+        function prepareActions( actions ) {
+            if (
+                    ( actions === null ) ||
+                    ( actions === false ) ||
+                    ( actions === undefined ) ||
+                    ( actions === "ignore" ) ||
+                    ( actions === [ "ignore" ] )
+                ) {
+                return [];
+            }
+            if ( ( typeof actions === "string" ) && ( actions in $.fn.conditionize.actions ) ) {
+                return [ actions ];
+            }
+            if ( typeof actions === "function" ) {
+                return [ actions ];
+            }
+            if ( Array.isArray(actions) && 
+                actions.every(function(val) {
+                    return ( ( ( typeof val === "string" ) &&
+                          ( val in $.fn.conditionize.actions )
+                        ) || ( typeof val === "function" ) );
+                }) ) {
+                return actions;
+            }
+            throw new TypeError( "Incorrect action type for ifTrue or ifFalse." +
+                "ifTrue/ifFalse must be either a string with default action name," +
+                "i.e. one of \"show\", \"hide\", \"clear\", \"trigger\" or a function with " +
+                "one argument ($section);  or array consisting of them." );
         }
-        if ((typeof settings.ifFalse === "string") ||
-            (typeof settings.ifFalse === "function")) {
-            settings.ifFalse = [ settings.ifFalse ];
-        }
+        settings.ifTrue = prepareActions( settings.ifTrue );
+        settings.ifFalse = prepareActions( settings.ifFalse );
 
         // Main handler for a conditional section
         var handler = function( isMet, $section ) {
             var actions;
-            if (isMet) {
+            if ( isMet ) {
                 actions = settings.ifTrue;
             } else {
                 actions = settings.ifFalse;
@@ -39,11 +62,11 @@
             actions.forEach(
                 function( h ) {
                     if ( typeof h === "string" ) {
-                        if ( h.startsWith("trigger") ) {
-                            if (h === "trigger") {
+                        if ( h.startsWith( "trigger" ) ) {
+                            if ( h === "trigger" ) {
                                 $.fn.conditionize.actions[ h ]( $section, settings.updateOn );
                             } else {
-                                $.fn.conditionize.actions[ h ]( $section, h.slice(8).split(/[\s,]+/) );
+                                $.fn.conditionize.actions[ h ]( $section, h.slice( 8 ).split( /[\s,]+/ ) );
                             }
                         } else {
                             $.fn.conditionize.actions[ h ]( $section );
@@ -85,25 +108,21 @@
             } );
 
             //Show based on current value on page load
-            if (settings.updateOn.split(' ').indexOf('load') !== -1) {
+            if ( settings.onload ) {
                 // If already loaded
-                if (document.readyState === 'complete') {
+                if ( document.readyState === "complete" ) {
                     handler( eval( cond ), $section );
                 } else {
-                    $(window).on('load', function(){
+                    $( window ).on( "load", function() {
                         handler( eval( cond ), $section );
-                    });
+                    } );
                 }
-            }
-            if (settings.updateOn.split(' ').indexOf('ready') !== -1) {
-                $(document).ready(function(){
-                    handler( eval( cond ), $section );
-                });
             }
         } );
     };
 
     $.extend( $.fn.conditionize, {
+
         // Prepare a regexp to catch potential field names/ids.
         // Regexp has format like: "(#?[" + allowedNameSymbols + "]+)" + ifNotInQuotes
         re: new RegExp( "(#?[a-z0-9_\\[\\]-]+)" +
@@ -139,28 +158,28 @@
 
         // Build-in actions
         actions: {
-            show : function ($section) {
+            show: function( $section ) {
                 $section.slideDown();
             },
-            hide: function ($section) {
+            hide: function( $section ) {
                 $section.slideUp();
             },
-            clear: function($section) {
+            clear: function( $section ) {
                 $section.find( "select, input" ).each( function() {
                     if ( ( $( this ).attr( "type" ) === "radio" ) ||
                          ( $( this ).attr( "type" ) === "checkbox" ) ) {
-                        $( this ).prop( "checked", false )
+                        $( this ).prop( "checked", false );
                     } else {
                         $( this ).val( "" );
                     }
-                    $( this ).trigger( "change" )
+                    $( this ).trigger( "change" );
                 } );
             },
-            trigger: function($section, events) {
-                if (Array.isArray(events)) {
-                    events = events.join(' ');
+            trigger: function( $section, events ) {
+                if ( Array.isArray( events ) ) {
+                    events = events.join( " " );
                 }
-                $section.trigger(events);
+                $section.trigger( events );
             }
         }
     } );
