@@ -217,9 +217,9 @@
                     <div class="item">
                         <label>These two inputs must be independent</label>
                         <input type="text" name="wierd-input-1" placeholder="foo">
-                        <input type="text" name="wierd-input-12" placeholder="bar">
+                        <input type="text" name="wierd-input-12" placeholder="foo">
                         <p class="conditional" data-condition="wierd-input-1 === 'foo'">The first one is 'foo'</p>
-                        <p class="conditional" data-condition="wierd-input-12 === 'bar'">The second one is 'bar'</p>
+                        <p class="conditional" data-condition="wierd-input-12 === 'foo'">The second one is 'foo'</p>
                     </div>
                 </div>
                 <div class="case">
@@ -227,9 +227,9 @@
                     <div class="item">
                         <label>These two inputs must be independent</label>
                         <input type="text" id="wierd-input-1" placeholder="foo">
-                        <input type="text" id="wierd-input-12" placeholder="bar">
+                        <input type="text" id="wierd-input-12" placeholder="foo">
                         <p class="conditional" data-condition="#wierd-input-1 === 'foo'">The first one is 'foo'</p>
-                        <p class="conditional" data-condition="#wierd-input-12 === 'bar'">The second one is 'bar'</p>
+                        <p class="conditional" data-condition="#wierd-input-12 === 'foo'">The second one is 'foo'</p>
                     </div>
                 </div>
                 <div class="case">
@@ -293,14 +293,103 @@
             </div>
 
             <h2>Different options</h2>
-
+            <script>
+                /* TODO: List of options to test:
+                    // Update on
+                    {
+                        updateOn: "keyup",
+                    }
+                    {
+                        updateOn: ["keyup"],
+                    }
+                    {
+                        updateOn: ["change", "mouseleave"],
+                    }
+                    {
+                        updateOn: "myCustomEvent",
+                    }
+                    // On load
+                    {
+                        onload: false
+                    }
+                    // Actions ignore
+                    {
+                        ifTrue: null
+                    }
+                    {
+                        ifTrue: false
+                    }
+                    {
+                        ifTrue: "ignore"
+                    }
+                    {
+                        ifTrue: ["ignore"]
+                    }
+                    {
+                        ifTrue: []
+                    }
+                    {
+                        ifFalse: null
+                    }
+                    {
+                        ifFalse: false
+                    }
+                    {
+                        ifFalse: "ignore"
+                    }
+                    {
+                        ifFalse: ["ignore"]
+                    }
+                    {
+                        ifFalse: []
+                    }
+                    // Build-in actions
+                    {
+                        ifTrue: "hide",
+                        ifFalse: "show"
+                    }
+                    {
+                        ifTrue: "clear", //single
+                        ifFalse: "ignore"
+                    }
+                    {
+                        ifTrue: "clear", //nested
+                        ifFalse: "ignore"
+                    }
+                    {
+                        ifTrue: "trigger",
+                        ifFalse: "ignore"
+                    }
+                    {
+                        ifTrue: "trigger:change",
+                        ifFalse: "ignore"
+                    }
+                    {
+                        ifTrue: "trigger:change,myCustomEvent",
+                        ifFalse: "ignore"
+                    }
+                    {
+                        ifTrue: ["show"],
+                        ifFalse: ["hide", "clear"]
+                    }
+                    // Custom actions
+                    {
+                        ifTrue: function($section) {...},
+                        ifFalse: function($section) {...}
+                    }
+                    {
+                        ifTrue: ["show", function($section) {...}],
+                        ifFalse: ["hide", "clear",  function($section) {...}],
+                    }
+                */
+            </script>
             <h3>Update events</h3>
             <div id="update-events">
                 <div class="case">
                     <h4>Set an event for conditions update by string</h4>
                     <div class="item">
                         <label><input type="text" name="input-onkeyup" placeholder="foo"></label>
-                        <p class="conditional-keyup" data-condition="input-onkeyup==='foo'">Works with keyup! You must see it initially because 'load' is not presented in 'updateOn'.</p>
+                        <p class="conditional-keyup" data-condition="input-onkeyup==='foo'">Works with keyup!</p>
                         <script>
                             $('p.conditional-keyup').conditionize({
                                 updateOn:'keyup'
@@ -312,7 +401,7 @@
                     <h4>Set an event for conditions update by string</h4>
                     <div class="item">
                         <label><input type="text" name="input-onkeyup2" placeholder="foo"></label>
-                        <p class="conditional-keyup2" data-condition="input-onkeyup2==='foo'">Works with keyup array! You must see it initially because 'load' is not presented in 'updateOn'.</p>
+                        <p class="conditional-keyup2" data-condition="input-onkeyup2==='foo'">Works with keyup array!</p>
                         <script>
                             $('p.conditional-keyup2').conditionize({
                                 updateOn: ['keyup']
@@ -327,7 +416,7 @@
                         <p class="conditional-keyup3" data-condition="input-onkeyup3==='foo'">Works with many events in one string!</p>
                         <script>
                             $('p.conditional-keyup3').conditionize({
-                                updateOn:['change', 'mouseleave', 'load']
+                                updateOn:['change', 'mouseleave']
                             });
                         </script>
                     </div>
@@ -336,7 +425,7 @@
                     <h4>Custom event</h4>
                     <div class="item">
                         <button id="button-custom">Update!</button>
-                        <label><input type="checkbox" id="options_checkbox1">Some checkbox. You can toggle it. Id does not work without the button.</label>
+                        <label><input type="checkbox" id="options_checkbox1">Some checkbox. You can toggle it. It does not work without the button.</label>
                         <p class="conditional-custom" data-condition="#options_checkbox1">This one will be updated only after the button click!</p>
                         <script>
                             $('#button-custom').click(function(){
@@ -346,25 +435,36 @@
                                 });
                             });
                             $('p.conditional-custom').conditionize({
-                                updateOn:['load', 'buttonWasClicked']
+                                updateOn:['buttonWasClicked']
+                            });
+                        </script>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Do not update on load</h4>
+                    <div class="item">
+                        <label><input type="checkbox" id="options_checkbox2">Some checkbox. You can toggle it.</label>
+                        <p class="conditional-no-onload" data-condition="#options_checkbox2">This one is ignored on page load, but it works if you toggle the checkbox.</p>
+                        <script>
+                            $('p.conditional-no-onload').conditionize({
+                                onload: false
                             });
                         </script>
                     </div>
                 </div>
             </div>
-
             <h3>Handler actions</h3>
             <div id="handler-actions">
                 <div class="case">
                     <h4>Use custom actions</h4>
                     <div class="item">
-                        <label><input type="checkbox" id="actions_checkbox1">Toggle to see alerts</label>
+                        <label><input type="checkbox" id="actions_checkbox1">Toggle to increment counters</label>
                         <p class="conditional-alert" data-condition="#actions_checkbox1">This text will not be affected.</p>
                         <label>Checked n times: </label><input id="check_cnt" type="text" value="0" disabled>
                         <label>Unchecked n times: </label><input id="uncheck_cnt"type="text" value="0" disabled>
                         <script>
                             $('.conditional-alert').conditionize({
-                                updateOn: 'change',
+                                onload: false,
                                 ifTrue: function($section) {
                                     $('#check_cnt').val(parseInt($('#check_cnt').val()) +1)
                                 },

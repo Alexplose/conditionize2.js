@@ -6,10 +6,16 @@
 
             // Array of events on which to update condition
             updateOn: [ "change" ],
+
             // Update on page load
             onload: true,
 
-            // Set actions for condition
+            // Set actions for condition states
+            // Set value to any of: false / null / '' / 'ignore' / []
+            // if you want to ignore the state.  Otherwise set value to
+            // * a sting (key for build-in actions in $.fn.conditionize.actions)
+            // * a function like function($section) {...}
+            // * or an array consisting of strings and/or function described above
             ifTrue: "show",
             ifFalse: "hide"
         }, options );
@@ -19,12 +25,13 @@
             settings.updateOn = settings.updateOn.join( " " );
         }
         function prepareActions( actions ) {
+            if ( Array.isArray( actions ) && ( actions.length === 1 ) ) {
+                actions = actions[ 0 ];
+            }
             if (
                     ( actions === null ) ||
                     ( actions === false ) ||
-                    ( actions === undefined ) ||
-                    ( actions === "ignore" ) ||
-                    ( actions === [ "ignore" ] )
+                    ( actions === "ignore" )
                 ) {
                 return [];
             }
@@ -34,12 +41,12 @@
             if ( typeof actions === "function" ) {
                 return [ actions ];
             }
-            if ( Array.isArray(actions) && 
-                actions.every(function(val) {
+            if ( Array.isArray( actions ) &&
+                actions.every( function( val ) {
                     return ( ( ( typeof val === "string" ) &&
                           ( val in $.fn.conditionize.actions )
                         ) || ( typeof val === "function" ) );
-                }) ) {
+                } ) ) {
                 return actions;
             }
             throw new TypeError( "Incorrect action type for ifTrue or ifFalse." +
@@ -109,6 +116,7 @@
 
             //Show based on current value on page load
             if ( settings.onload ) {
+
                 // If already loaded
                 if ( document.readyState === "complete" ) {
                     handler( eval( cond ), $section );
