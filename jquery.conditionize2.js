@@ -25,30 +25,26 @@
             settings.updateOn = settings.updateOn.join( " " );
         }
         function prepareActions( actions ) {
-            if ( Array.isArray( actions ) && ( actions.length === 1 ) ) {
-                actions = actions[ 0 ];
-            }
-            if (
-                    ( actions === null ) ||
-                    ( actions === false ) ||
-                    ( actions === "ignore" )
-                ) {
+            if ( ( !actions ) || ( actions === "ignore" ) ) {
                 return [];
             }
-            if ( ( typeof actions === "string" ) && ( actions in $.fn.conditionize.actions ) ) {
-                return [ actions ];
+            if ( typeof actions === "string" ) {
+                actions = [ actions ];
             }
             if ( typeof actions === "function" ) {
-                return [ actions ];
+                actions = [ actions ];
             }
             if ( Array.isArray( actions ) &&
-                actions.every( function( val ) {
+                 actions.every( function( val ) {
                     return ( ( ( typeof val === "string" ) &&
-                          ( val in $.fn.conditionize.actions )
-                        ) || ( typeof val === "function" ) );
-                } ) ) {
+                               ( $.fn.conditionize.actions.hasOwnProperty( val.split( ":" )[ 0 ] ) )
+                             ) ||
+                            ( typeof val === "function" ) );
+                    } )
+                ) {
                 return actions;
             }
+
             throw new TypeError( "Incorrect action type for ifTrue or ifFalse." +
                 "ifTrue/ifFalse must be either a string with default action name," +
                 "i.e. one of \"show\", \"hide\", \"clear\", \"trigger\" or a function with " +
@@ -71,9 +67,9 @@
                     if ( typeof h === "string" ) {
                         if ( h.startsWith( "trigger" ) ) {
                             if ( h === "trigger" ) {
-                                $.fn.conditionize.actions[ h ]( $section, settings.updateOn );
+                                $.fn.conditionize.actions.trigger( $section, settings.updateOn );
                             } else {
-                                $.fn.conditionize.actions[ h ]( $section, h.slice( 8 ).split( /[\s,]+/ ) );
+                                $.fn.conditionize.actions.trigger( $section, h.slice( 8 ) );
                             }
                         } else {
                             $.fn.conditionize.actions[ h ]( $section );
@@ -172,7 +168,7 @@
             hide: function( $section ) {
                 $section.slideUp();
             },
-            clear: function( $section ) {
+            clearFields: function( $section ) {
                 $section.find( "select, input" ).each( function() {
                     if ( ( $( this ).attr( "type" ) === "radio" ) ||
                          ( $( this ).attr( "type" ) === "checkbox" ) ) {
@@ -184,10 +180,10 @@
                 } );
             },
             trigger: function( $section, events ) {
-                if ( Array.isArray( events ) ) {
-                    events = events.join( " " );
-                }
-                $section.trigger( events );
+                events = events.replace( ",", " " );
+                events.split( " " ).forEach( function( e ) {
+                    $section.trigger( e );
+                } );
             }
         }
     } );

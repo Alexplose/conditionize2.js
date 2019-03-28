@@ -23,10 +23,16 @@
         </style>
     </head>
     <body>
-        <div class="w3-container w3-blue-grey w3-padding">
-            <h1><code class="w3-codespan">conditionize2</code>. A jQuery plugin for conditioning things</h1>
+        <!-- Sidebar -->
+        <div class="w3-sidebar w3-bar-block w3-border-right" style="display:none;width:25%" id="sidebar">
+          <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+        </div>
+        
+        <!-- Page Content -->
+        <div class="w3-container w3-blue-grey w3-padding" id="page-content">
+            <h1><button class="w3-button w3-xlarge" onclick="w3_open()">☰</button>&nbsp;<code class="w3-codespan">conditionize2</code>. A jQuery plugin for conditioning things</h1>
 
-            <h2>Try different input types</h2>
+            <h2>Different input types</h2>
             
             <h3>Inputs</h3>
             <div id="inputs">
@@ -210,8 +216,10 @@
                 </div>
             </div>
 
-            <h2>Check that names/ids are parsed correctly</h2>
-            <div id="wierd-names">
+            <h2>names/ids parsing</h2>
+
+            <h3>Overlapping names</h3>
+            <div id="overlapping-names">
                 <div class="case">
                     <h4>Partially equal names</h4>
                     <div class="item">
@@ -232,6 +240,10 @@
                         <p class="conditional" data-condition="#wierd-input-12 === 'foo'">The second one is 'foo'</p>
                     </div>
                 </div>
+            </div>
+
+            <h3>Allowed symbols support</h3>
+            <div id="overlapping-names">
                 <div class="case">
                     <h4>Allowed symbols in name</h4>
                     <div class="item">
@@ -250,7 +262,7 @@
                 </div>
             </div>
 
-            <h2>Check complicated conditions</h2>
+            <h2>Complicated conditions</h2>
             <div id="conditions">
                 <div class="case">
                     <h4>No space and no parentheses</h4>
@@ -292,97 +304,8 @@
                 </div>
             </div>
 
-            <h2>Different options</h2>
-            <script>
-                /* TODO: List of options to test:
-                    // Update on
-                    {
-                        updateOn: "keyup",
-                    }
-                    {
-                        updateOn: ["keyup"],
-                    }
-                    {
-                        updateOn: ["change", "mouseleave"],
-                    }
-                    {
-                        updateOn: "myCustomEvent",
-                    }
-                    // On load
-                    {
-                        onload: false
-                    }
-                    // Actions ignore
-                    {
-                        ifTrue: null
-                    }
-                    {
-                        ifTrue: false
-                    }
-                    {
-                        ifTrue: "ignore"
-                    }
-                    {
-                        ifTrue: ["ignore"]
-                    }
-                    {
-                        ifTrue: []
-                    }
-                    {
-                        ifFalse: null
-                    }
-                    {
-                        ifFalse: false
-                    }
-                    {
-                        ifFalse: "ignore"
-                    }
-                    {
-                        ifFalse: ["ignore"]
-                    }
-                    {
-                        ifFalse: []
-                    }
-                    // Build-in actions
-                    {
-                        ifTrue: "hide",
-                        ifFalse: "show"
-                    }
-                    {
-                        ifTrue: "clear", //single
-                        ifFalse: "ignore"
-                    }
-                    {
-                        ifTrue: "clear", //nested
-                        ifFalse: "ignore"
-                    }
-                    {
-                        ifTrue: "trigger",
-                        ifFalse: "ignore"
-                    }
-                    {
-                        ifTrue: "trigger:change",
-                        ifFalse: "ignore"
-                    }
-                    {
-                        ifTrue: "trigger:change,myCustomEvent",
-                        ifFalse: "ignore"
-                    }
-                    {
-                        ifTrue: ["show"],
-                        ifFalse: ["hide", "clear"]
-                    }
-                    // Custom actions
-                    {
-                        ifTrue: function($section) {...},
-                        ifFalse: function($section) {...}
-                    }
-                    {
-                        ifTrue: ["show", function($section) {...}],
-                        ifFalse: ["hide", "clear",  function($section) {...}],
-                    }
-                */
-            </script>
+            <h2>Customize options</h2>
+
             <h3>Update events</h3>
             <div id="update-events">
                 <div class="case">
@@ -425,11 +348,11 @@
                     <h4>Custom event</h4>
                     <div class="item">
                         <button id="button-custom">Update!</button>
-                        <label><input type="checkbox" id="options_checkbox1">Some checkbox. You can toggle it. It does not work without the button.</label>
-                        <p class="conditional-custom" data-condition="#options_checkbox1">This one will be updated only after the button click!</p>
+                        <label><input type="checkbox" id="options-checkbox1">Some checkbox. You can toggle it. It does not work without the button.</label>
+                        <p class="conditional-custom" data-condition="#options-checkbox1">This one will be updated only after the button click!</p>
                         <script>
                             $('#button-custom').click(function(){
-                                $('#options_checkbox1').trigger({
+                                $('#options-checkbox1').trigger({
                                     type: "buttonWasClicked",
                                     message: "The button was clicked"
                                 });
@@ -443,8 +366,8 @@
                 <div class="case">
                     <h4>Do not update on load</h4>
                     <div class="item">
-                        <label><input type="checkbox" id="options_checkbox2">Some checkbox. You can toggle it.</label>
-                        <p class="conditional-no-onload" data-condition="#options_checkbox2">This one is ignored on page load, but it works if you toggle the checkbox.</p>
+                        <label><input type="checkbox" id="options-checkbox2">Some checkbox. You can toggle it.</label>
+                        <p class="conditional-no-onload" data-condition="#options-checkbox2">This one is ignored on page load, but it works if you toggle the checkbox.</p>
                         <script>
                             $('p.conditional-no-onload').conditionize({
                                 onload: false
@@ -453,29 +376,265 @@
                     </div>
                 </div>
             </div>
-            <h3>Handler actions</h3>
+
+            <h3>Customize actions: custom & ignore</h3>
             <div id="handler-actions">
                 <div class="case">
-                    <h4>Use custom actions</h4>
+                    <h4>Custom actions</h4>
                     <div class="item">
-                        <label><input type="checkbox" id="actions_checkbox1">Toggle to increment counters</label>
-                        <p class="conditional-alert" data-condition="#actions_checkbox1">This text will not be affected.</p>
-                        <label>Checked n times: </label><input id="check_cnt" type="text" value="0" disabled>
-                        <label>Unchecked n times: </label><input id="uncheck_cnt"type="text" value="0" disabled>
+                        <label><input type="checkbox" id="actions-checkbox1">Toggle to increment counters</label>
+                        <p class="conditional-customaction" data-condition="#actions-checkbox1">This text will not be affected.</p>
+                        <label>Checked n times: </label><input id="check-cnt" type="text" value="0" disabled>
+                        <label>Unchecked n times: </label><input id="uncheck-cnt" type="text" value="0" disabled>
                         <script>
-                            $('.conditional-alert').conditionize({
+                            $('.conditional-customaction').conditionize({
                                 onload: false,
                                 ifTrue: function($section) {
-                                    $('#check_cnt').val(parseInt($('#check_cnt').val()) +1)
+                                    $('#check-cnt').val(parseInt($('#check-cnt').val()) +1)
                                 },
                                 ifFalse: function($section) {
-                                    $('#uncheck_cnt').val(parseInt($('#uncheck_cnt').val()) +1)
+                                    $('#uncheck-cnt').val(parseInt($('#uncheck-cnt').val()) +1)
                                 }
                             });
                         </script>
                     </div>
                 </div>
+                <div class="case">
+                    <h4>Ingnore ifTrue actions</h4>
+                    <div class="item">
+                        <label><input type="checkbox" id="actions-checkbox2" checked>Toggle it</label>
+                        <p>This will alert only on uncheck and ignore check.</p>
+                        <p class="conditional-alert-false1" data-condition="#actions-checkbox2"></p>
+                        <p class="conditional-alert-false2" data-condition="#actions-checkbox2"></p>
+                        <p class="conditional-alert-false3" data-condition="#actions-checkbox2"></p>
+                        <p class="conditional-alert-false4" data-condition="#actions-checkbox2"></p>
+                        <p class="conditional-alert-false5" data-condition="#actions-checkbox2"></p>
+                        <script>
+                            $('.conditional-alert-false1').conditionize({
+                                ifTrue: null,
+                                ifFalse: function($section) { alert("null works"); }
+                            });
+                            $('.conditional-alert-false2').conditionize({
+                                ifTrue: false,
+                                ifFalse: function($section) { alert("false works"); }
+                            });
+                            $('.conditional-alert-false3').conditionize({
+                                ifTrue: undefined,
+                                ifFalse: function($section) { alert("undefined works"); }
+                            });
+                            $('.conditional-alert-false4').conditionize({
+                                ifTrue: "ignore",
+                                ifFalse: function($section) { alert("'ingnore' works"); }
+                            });
+                            $('.conditional-alert-false5').conditionize({
+                                ifTrue: [],
+                                ifFalse: function($section) { alert("[] works"); }
+                            });
+                        </script>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Ingnore ifFalse actions</h4>
+                    <div class="item">
+                        <label><input type="checkbox" id="actions-checkbox3">Toggle it</label>
+                        <p>This will alert only on check and ignore uncheck.</p>
+                        <p class="conditional-alert-true1" data-condition="#actions-checkbox3"></p>
+                        <p class="conditional-alert-true2" data-condition="#actions-checkbox3"></p>
+                        <p class="conditional-alert-true3" data-condition="#actions-checkbox3"></p>
+                        <p class="conditional-alert-true4" data-condition="#actions-checkbox3"></p>
+                        <p class="conditional-alert-true5" data-condition="#actions-checkbox3"></p>
+                        <script>
+                            $('.conditional-alert-true1').conditionize({
+                                ifTrue: function($section) { alert("null works"); },
+                                ifFalse: null
+                            });
+                            $('.conditional-alert-true2').conditionize({
+                                ifTrue: function($section) { alert("false works"); },
+                                ifFalse: false
+                            });
+                            $('.conditional-alert-true3').conditionize({
+                                ifTrue: function($section) { alert("undefined works"); },
+                                ifFalse: undefined
+                            });
+                            $('.conditional-alert-true4').conditionize({
+                                ifTrue: function($section) { alert("'ingnore' works"); },
+                                ifFalse: "ignore"
+                            });
+                            $('.conditional-alert-true5').conditionize({
+                                ifTrue: function($section) { alert("[] works"); },
+                                ifFalse: []
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Customize actions: build-in actions</h3>
+            <div id="buildin-actions">
+                <div class="case">
+                    <h4>show and hide</h4>
+                    <div class="item">
+                        <label><input type="checkbox" id="actions-checkbox4">Toggle it</label>
+                        <p class="conditional-buildin1" data-condition="#actions-checkbox4">Show if true, hide if false</p>
+                        <p class="conditional-buildin2" data-condition="#actions-checkbox4">Hide if false, show if true</p>
+                        <script>
+                            $('.conditional-buildin1').conditionize({
+                                ifTrue: 'show',
+                                ifFalse: 'hide'
+                            });
+                            $('.conditional-buildin2').conditionize({
+                                ifTrue: 'hide',
+                                ifFalse: 'show'
+                            });
+                        </script>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Clear fields</h4>
+                    <div class="item">
+                        <label><input type="checkbox" id="actions-checkbox5">Check it after filling fields bellow</label>
+                        <div class="conditional-buildin3" data-condition="#actions-checkbox5">
+                            <p>Check the checkbox to clear all fields</p>
+                            <p>
+                                <label>text input</label>
+                                <input type="text" placeholder="type something">
+                            </p>
+                            <p>
+                                <label><input type="checkbox">checkbox input</label>
+                            </p>
+
+                            <p>
+                                <label><input type="radio" name="radio" value="1">radio buttons</label>
+                                <label><input type="radio" name="radio" value="2">radio buttons</label>
+                            </p>
+
+                            <p>
+                                <select>
+                                    <option value="">...</option>
+                                    <option value="1">one</option>
+                                    <option value="2">two</option>
+                                    <option value="3">three</option>
+                                </select>
+                            </p>
+                        </div>
+                        <script>
+                            $('.conditional-buildin3').conditionize({
+                                ifTrue: 'clearFields',
+                                ifFalse: 'ignore'
+                            });
+                        </script>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Combine clear and hide</h4>
+                    <div class="item">
+                        <label><input type="checkbox" id="actions-checkbox6" checked>Uncheck it after filling the input bellow</label>
+                        <div class="conditional-buildin4" data-condition="#actions-checkbox6">
+                            <p>Check the checkbox to clear the input and hide it</p>
+                            <label>text input</label>
+                            <input type="text" placeholder="type something...">
+                        </div>
+                        <script>
+                            $('.conditional-buildin4').conditionize({
+                                ifTrue: ["show"],
+                                ifFalse: ["hide", "clearFields"]
+                            });
+                        </script>
+                    </div>
+                </div>
+                <div class="case">
+                    <h4>Trigger events</h4>
+                    <div class="item">
+                        <label><input type="checkbox" id="actions-checkbox7">Check it to trigger events</label>
+                        <p class="conditional-buildin5" data-condition="#actions-checkbox7"></p>
+                        <p class="conditional-buildin6" data-condition="#actions-checkbox7"></p>
+                        <p class="conditional-buildin7" data-condition="#actions-checkbox7"></p>
+                        <script>
+                            $('.conditional-buildin5').conditionize({
+                                updateOn: "change",
+                                ifTrue: "trigger",
+                                ifFalse: "ignore"
+                            });
+                            $('.conditional-buildin5').change(function(){
+                                $(this).text($(this).text() + ' Change event occured!');
+                            });
+
+                            $('.conditional-buildin6').conditionize({
+                                ifTrue: "trigger:click",
+                                ifFalse: "ignore"
+                            });
+                            $('.conditional-buildin6').click(function(){
+                                $(this).text($(this).text() + ' Click event occured!');
+                            });
+
+                            $('.conditional-buildin7').conditionize({
+                                ifTrue: "trigger:click yourCustomEvent",
+                                ifFalse: "ignore"
+                            });
+                            $('.conditional-buildin7').on('yourCustomEvent', function(){
+                                $(this).text($(this).text() + ' "yourCustomEvent" event occured!');
+                            });
+                            $('.conditional-buildin7').click(function(){
+                                $(this).text($(this).text() + ' Click event occured!');
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Customize actions: mixing build-in with custom</h3>
+            <div id="mixes">
+                <div class="case">
+                <h4>Let's try something more sophisticated</h4>
+                <div class="item">
+                    <label><input type="checkbox" id="actions-checkbox8">Do you want to answer a lot of questions?</label>
+                    <div class="conditional-mix1" data-condition="#actions-checkbox8">
+                        <p>This is a section with subsections</p>
+                        <p>
+                            <label>What is your name?</label>
+                            <input type="text" placeholder="Harry Potter" id="actions-input8">
+                        </p>
+                        <p class="conditional-alert-mix2" data-condition="#actions-input8 === 'Harry Potter'"></p>
+                        <div class="conditional-mix3" data-condition="#actions-input8">
+                            <label>How old are you?</label>
+                            <select id="actions-select8">
+                                <option value=""></option>
+                                <option value="80"> < 80 </option>
+                                <option value="100"> 80+ </option>
+                            </select>
+                            <p class="conditional-mix4" data-condition="parseInt(#actions-select8) > 80">WoW!</p>
+                        </div>
+                    </div>
+                    <label>Times you finished to answer: </label>
+                    <input type="text" disabled id="actions-counter8" value="0">
+                    <script>
+                        $(".conditional-mix1").conditionize({
+                            ifTrue: [
+                                "show",
+                                function($section) {
+                                    alert("Let's start! Toggle the checkbox to clear fields and start again.")
+                                }
+                            ],
+                            ifFalse: [
+                                "hide",
+                                "clearFields",
+                                function($section) {
+                                    $("#actions-counter8").val(parseInt($("#actions-counter8").val()) + 1);
+                                }
+                            ]
+                        });
+                        $(".conditional-alert-mix2").conditionize({
+                            updateOn: "keyup",
+                            ifTrue: function($section) {alert("Expelliarmus!");},
+                            ifFalse: "ignore"
+                        })
+                        $(".conditional-mix3,.conditional-mix4").conditionize();
+                    </script>
+                </div>
+            </div>
         </div>
+
+        <!-- Helper scripts -->
         <script src="https://www.w3schools.com/lib/w3codecolor.js"></script>
         <script>
             // Add html code to each example
@@ -502,6 +661,29 @@
             $("input[type='radio']").addClass('w3-radio');
             $("select").addClass('w3-select');
             $('p[class^="conditional"]').addClass('msg');
+            $('p[class^="conditional-alert"]').hide();
+        </script>
+        <script>
+            // Table of contents
+            var index = 0;
+            $("h2,h3").each(function(){
+                $(this).attr('id', 'section-' + index);
+                var offset = "";
+                if ($( this ).is("h3")) {
+                    offset = "&nbsp;&nbsp;&nbsp;&nbsp;";
+                }
+                $('#sidebar').append('<a href="#section-' + index+ '" class="w3-bar-item w3-button">' + offset + $(this).text() + '</a>');
+                index += 1;
+            });
+            function w3_open() {
+              document.getElementById("sidebar").style.display = "block";
+              document.getElementById("page-content").style.marginLeft = "25%";
+            }
+
+            function w3_close() {
+              document.getElementById("sidebar").style.display = "none";
+              document.getElementById("page-content").style.marginLeft = "auto";
+            }
         </script>
     </body>
 </html>
