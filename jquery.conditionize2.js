@@ -5,7 +5,7 @@
         var settings = $.extend( {
 
             // Array of events on which to update condition
-            updateOn: [ "change" ],
+            updateOn: "change",
 
             // Update on page load
             onload: true,
@@ -13,7 +13,7 @@
             // Set actions for condition states
             // Set value to any of: false / null / '' / 'ignore' / []
             // if you want to ignore the state.  Otherwise set value to
-            // * a sting (key for build-in actions in $.fn.conditionize.actions)
+            // * a sting (key for built-in actions in $.fn.conditionize.actions)
             // * a function like function($section) {...}
             // * or an array consisting of strings and/or function described above
             ifTrue: "show",
@@ -160,7 +160,7 @@
             return vals;
         },
 
-        // Build-in actions
+        // Built-in actions
         actions: {
             show: function( $section ) {
                 $section.slideDown();
