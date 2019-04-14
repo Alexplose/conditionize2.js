@@ -2,6 +2,29 @@
 A flexible jQuery plugin for conditional actions (*like showing and hiding elements, triggering events or whatever else you need*) based on values of one or many fields. This is an improved version of `conditionize.js` jQuery plugin. Unlike the previous version, `conditionize2.js` is not restricted to only show and hide actions. But for simpler migration from `conditionize.js` to  `conditionize2.js`, show/hide is the default behaviour.
 **A lot of examples available** [here](https://rguliev.github.io/conditionize2.js/test/manual.html)
 
+# Table of contents
+- [Installation](#installation)
+- [Basic usage](#basic-usage)
+- [Conditions](#conditions)
+  * [Fields reference](#fields-reference)
+  * [Supported names/ids](#supported-names-ids)
+  * [Multi-value fields](#multi-value-fields)
+- [Options](#options)
+  * [Update events: `updateOn`](#update-events)
+  * [On load: `onload`](#on-load)
+  * [Actions: `ifTrue` / `ifFalse`.](#actions)
+    + [Available built-in handlers](#available-built-in-handlers)
+      - [ignore](#ignore)
+      - [show](#show)
+      - [hide](#hide)
+    + [clearFields](#clearfields)
+      - [trigger](#trigger)
+- [Migration](#migration)
+  * [From `conditionize.flexible.js`](#from-conditionize-flexible)
+  * [From `conditionize.js`](#from-conditionize)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 # Installation
 There is nothing special in installation:
 1. [Source jQuery](https://jquery.com/download/) *(for now it is well tested with 3.3.1, but 1.\* and 2.\* also worked when I checked on some examples. In future there will be more precise information about the required jQuery version)*
@@ -42,6 +65,7 @@ Fields can be reffered eather by id or by name. Names starting with `#` are cons
 - `#myInput === '1'` means "if a value of the element with id `myInput` is equal to `'1'`";
 - `myInput === '1'` means "if a value of the element with name `myInput` is equal to `'1'`".
 
+<a name="supported-names-ids"></a>
 ## Supported names/ids
 Any string consisting of lower and upper case letters(`a-z` and `A-Z`), digits(`0-9`), underscores(`_`), hyphen(`-`), and brackets(`[`,`]`).
 
@@ -85,7 +109,7 @@ Here is the list of all available options and their default values. Below you ca
     ifFalse: "hide"
 }
 ```
-
+<a name="update-events"></a>
 ## Update events: `updateOn`
 A string or an array of strings of events on which to update a condition value. By defalut the value is `"change"`, which means that `data-condition` value will be updated when any field in the condition trigger `"change"` event. You might want to update the condition on `keyup` event as well, then just set the value to `["change", "keyup"]`. It is recommended to keep `"change"` event since not all inputs trigger `"keyup"`. 
 **Example:**
@@ -99,6 +123,7 @@ A string or an array of strings of events on which to update a condition value. 
 </script>
 ```
 
+<a name="on-load"></a>
 ## On load: `onload`
 A boolean field indicating whether or not check conditions when a page is loaded. It is a special case, what to do on a page load. Because no `updateOn` event is triggered when the page had been loaded. So conditional actions cannot run. Thus, this option was added to give control of onload actions. If `true`, the `data-condition` will be calculated on the page load and the correcponding action will be done. Otherwise (i.e. if `false`), you take your responsibility on what to do on the page load. For example, you might have default CSS styles hiding everything, so there is no need for checking conditions.
 If you used the previous version of the plugin (`conditionize.js`) then you might consider this option something like `hideJS` in the previous version. That is why `hideJS` option was removed.
@@ -114,6 +139,8 @@ You see this text when page is loaded. But it works if you toggle the checkbox.
     });
 </script>
 ```
+
+<a name="actions"></a>
 ## Actions: `ifTrue` / `ifFalse`.
 Set actions you want to be implemented when the condition is true and when it is false correspondingly. A value must be one of the following:
 * a function of structure `function($section) {...}`, where `$section` is the conditional section
@@ -185,9 +212,11 @@ $('.conditional').conditionize({
 # Migration
 If you used `hideJS` option, play with `onload` parameter. `onload: false` supposed to give similar results as `hideJS: false`. But be careful because they are not completely equivalent.
 
+<a name="from-conditionize-flexible"></a>
 ## From `conditionize.flexible.js`
 Moving from `conditonize.flexible.js` is quite simple because you do not need to change conditions. `$("...").conditionize();` in the last version ([1548eff](https://github.com/renvrant/conditionize.js/commit/1548eff9745486a8a105ab019f1e20cd9e349bb9)) of `conditionize.flexible.js`  is equalent to `$("...").conditionize({ ifFalse: ["hide", "clearFields"] })` in the `conditionize2.js`. If you do not want fields to be cleared on hiding, then just leave it like `$("...").conditionize();`, i.e. in such you do need to change anything.
 
+<a name="from-conditionize"></a>
 ## From `conditionize.js`
 Migration from `conditionize.js` is more complicated because you will have to change condition arguments. Change your condition atributes from `<data-cond-option, data-cond-value[, data-cond-operator]>` to one atribute `data-condition`. For example:
 ```html
