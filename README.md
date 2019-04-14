@@ -17,7 +17,7 @@ A flexible jQuery plugin for conditional actions (*like showing and hiding eleme
       - [ignore](#ignore)
       - [show](#show)
       - [hide](#hide)
-    + [clearFields](#clearfields)
+      - [clearFields](#clearfields)
       - [trigger](#trigger)
 - [Migration](#migration)
   * [From `conditionize.flexible.js`](#from-conditionize-flexible)
