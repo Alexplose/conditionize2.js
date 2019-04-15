@@ -39,7 +39,7 @@ Sourcing by **CDN** is also possible:
 <script src="https://cdn.jsdelivr.net/gh/rguliev/conditionize2.js/jquery.conditionize2.min.js"></script>
 
 <!-- A certain version -->
-<script src="https://cdn.jsdelivr.net/gh/rguliev/conditionize2.js@2d0d7d215ebd1e8c63e96724376336526c673550/jquery.conditionize2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/rguliev/conditionize2.js@2.0.0/jquery.conditionize2.min.js"></script>
 ```
 
 **NPM** installation is not available for now but it is in the plan.
