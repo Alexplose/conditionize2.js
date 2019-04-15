@@ -1,6 +1,7 @@
 # conditionize2.js
 A flexible jQuery plugin for conditional actions (*like showing and hiding elements, triggering events or whatever else you need*) based on values of one or many fields. This is an improved version of `conditionize.js` jQuery plugin. Unlike the previous version, `conditionize2.js` is not restricted to only show and hide actions. But for simpler migration from `conditionize.js` to  `conditionize2.js`, show/hide is the default behaviour.
-**A lot of examples available** [here](https://rguliev.github.io/conditionize2.js/test/manual.html)
+
+**A lot of EXAMPLES available** [here](https://rguliev.github.io/conditionize2.js/test/manual.html)
 
 # Table of contents
 - [Installation](#installation)
@@ -12,7 +13,7 @@ A flexible jQuery plugin for conditional actions (*like showing and hiding eleme
 - [Options](#options)
   * [Update events: `updateOn`](#update-events)
   * [On load: `onload`](#on-load)
-  * [Actions: `ifTrue` / `ifFalse`.](#actions)
+  * [Actions: `ifTrue` / `ifFalse`](#actions)
     + [Available built-in handlers](#available-built-in-handlers)
       - [ignore](#ignore)
       - [show](#show)
@@ -141,7 +142,7 @@ You see this text when page is loaded. But it works if you toggle the checkbox.
 ```
 
 <a name="actions"></a>
-## Actions: `ifTrue` / `ifFalse`.
+## Actions: `ifTrue` / `ifFalse`
 Set actions you want to be implemented when the condition is true and when it is false correspondingly. A value must be one of the following:
 * a function of structure `function($section) {...}`, where `$section` is the conditional section
 * a string, a name of a built-in action; built-in actions are simple wrappers for the most common handlers like "show an element" or "hide an element". The full list of built-in actions is available below.
@@ -173,7 +174,7 @@ Set actions you want to be implemented when the condition is true and when it is
 #### hide
 Like the previous action, `"hide"` action calls jQuery `slideUp()` method on the section, i.e. is simpy a wrapper for `function( $s ) { $s.slideUp(); }` action, which is default behaviour in the previous version of conditionize.
 
-### clearFields
+#### clearFields
 A conditional section can contain form inputs or selects. In some cases it is important to clear the values to not send invalid data to a server. For example, let's assume we have a form with a section like following:
 ```html
   <label><input name="hasCar" type="checkbox">Do you have a car?</label>
