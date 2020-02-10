@@ -1,7 +1,7 @@
 # conditionize2.js
 A flexible jQuery plugin for conditional actions (*like showing and hiding elements, triggering events or whatever else you need*) based on values of one or many fields. This is an improved version of `conditionize.js` jQuery plugin. Unlike the previous version, `conditionize2.js` is not restricted to only show and hide actions. But for simpler migration from `conditionize.js` to  `conditionize2.js`, show/hide is the default behaviour.
 
-**A lot of EXAMPLES available** [here](https://rguliev.github.io/conditionize2.js/test/manual.html)
+**A lot of EXAMPLES available** [here](https://rguliev.github.io/conditionize2.js/demo/index.html)
 
 # Table of contents
 - [Installation](#installation)
