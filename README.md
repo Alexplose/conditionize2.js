@@ -42,7 +42,7 @@ Sourcing by **CDN** is also possible:
 <script src="https://cdn.jsdelivr.net/gh/rguliev/conditionize2.js@2.0.1/jquery.conditionize2.min.js"></script>
 ```
 
-**NPM** installation is not available for now but it is in the plan.
+**NPM:** `npm i conditionize2` or `npm i github:rguliev/conditionize2.js`
 
 # Basic usage
 1. Add your condition in a `data-condition` attribute for a container you want to be conditional. **Both `name` and `id` references can be used**. For example
