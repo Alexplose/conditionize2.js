@@ -28,18 +28,18 @@ A flexible jQuery plugin for conditional actions (*like showing and hiding eleme
 
 # Installation
 There is nothing special in installation:
-1. [Source jQuery](https://jquery.com/download/) *(for now it is well tested with 3.3.1, but 1.\* and 2.\* also worked when I checked on some examples. In future there will be more precise information about the required jQuery version)*
+1. [Source jQuery](https://jquery.com/download/) *(tested on 1.\*, 2.\*, and 3.\* versions of jQuery)*
 2. Source `conditionize2.js`. From a file:
 ```html
 <script src="js/jquery.conditionize2.min.js"></script>
 ```
-Sourcing by **CDN** is also possible: 
+Sourcing by **CDN** is also possible:
 ```html
 <!-- The latest version. Not recommended for production -->
 <script src="https://cdn.jsdelivr.net/gh/rguliev/conditionize2.js/jquery.conditionize2.min.js"></script>
 
 <!-- A certain version -->
-<script src="https://cdn.jsdelivr.net/gh/rguliev/conditionize2.js@2.0.0/jquery.conditionize2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/rguliev/conditionize2.js@2.0.1/jquery.conditionize2.min.js"></script>
 ```
 
 **NPM** installation is not available for now but it is in the plan.
@@ -56,10 +56,10 @@ Sourcing by **CDN** is also possible:
 ```js
 $(".my-conditional-div").conditionize();
 ```
-By default, it will show a conditional element if the condition in `data-condition` is true, and will hide it otherwise. But you can change this behaviour any way you want. Read more about options below. 
+By default, it will show a conditional element if the condition in `data-condition` is true, and will hide it otherwise. But you can change this behaviour any way you want. Read more about options below.
 
 # Conditions
-In order to set a contidion just add one attribute `data-condition` to your conditional element.  The plugin runs through all words in `data-condition` and replaces it by its value, if it's a DOM element. So, **any javascript staement can be used**, i.e. even conditions like `['str1','str2'].includes(myInput)` or `myInput.indexOf('str') !== -1`. 
+In order to set a contidion just add one attribute `data-condition` to your conditional element.  The plugin runs through all words in `data-condition` and replaces it by its value, if it's a DOM element. So, **any javascript staement can be used**, i.e. even conditions like `['str1','str2'].includes(myInput)` or `myInput.indexOf('str') !== -1`.
 
 ## Fields reference
 Fields can be reffered eather by id or by name. Names starting with `#` are considered to be an id. For example:
@@ -112,7 +112,7 @@ Here is the list of all available options and their default values. Below you ca
 ```
 <a name="update-events"></a>
 ## Update events: `updateOn`
-A string or an array of strings of events on which to update a condition value. By defalut the value is `"change"`, which means that `data-condition` value will be updated when any field in the condition trigger `"change"` event. You might want to update the condition on `keyup` event as well, then just set the value to `["change", "keyup"]`. It is recommended to keep `"change"` event since not all inputs trigger `"keyup"`. 
+A string or an array of strings of events on which to update a condition value. By defalut the value is `"change"`, which means that `data-condition` value will be updated when any field in the condition trigger `"change"` event. You might want to update the condition on `keyup` event as well, then just set the value to `["change", "keyup"]`. It is recommended to keep `"change"` event since not all inputs trigger `"keyup"`.
 **Example:**
 ```html
 <label><input type="text" name="foo">Type "foo"</label>
@@ -178,15 +178,15 @@ Like the previous action, `"hide"` action calls jQuery `slideUp()` method on the
 A conditional section can contain form inputs or selects. In some cases it is important to clear the values to not send invalid data to a server. For example, let's assume we have a form with a section like following:
 ```html
   <label><input name="hasCar" type="checkbox">Do you have a car?</label>
-  
+
   <fieldset class="carSubForm" data-condition="hasCar">
-    
+
     <label for="carColor">What is the color?</label>
     <input name="carColor" type="text">
-    
+
     <label for="carColor">What is the model?</label>
     <input name="carModel" type="text">
-  
+
   </fieldset>
 ```
 Now, what will happen with dependent fields if a user checks the checkbox and fills all fields but then unchecks checkbox back? For example, he forgot that he just sold the car. By default, values will be kept, so, in your database, you will see a user who does not have a car (`hasCar` is false) but have a car colour and model. In order to prevent such situations, add `"clearFields"` action which will clear all fields in the conditional section, like so:
@@ -201,7 +201,7 @@ $(".carSubForm").conditionize({
 You might also need to trigger an event (or events) in other to handle it somewhere else. `"trigger"` option allows you to do so. The syntax is the following:
 - `"trigger"` - this will trigger events from `updateOn` parameter
 - `"trigger:event"` - this will trigger `event`
-- `"trigger:event1 event2 event3"` - this will trigger three events: `event1`, `event2`, and `event3`. 
+- `"trigger:event1 event2 event3"` - this will trigger three events: `event1`, `event2`, and `event3`.
 For example
 ```js
 $('.conditional').conditionize({

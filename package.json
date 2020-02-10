@@ -1,6 +1,6 @@
 {
   "name": "conditionize2",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A jQuery plugin for conditional actions like show/hide on elements.",
   "main": "jquery.conditionize2.js",
   "directories": {
