@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../node_modules/qunit/qunit/qunit.css">
+    <script src="../node_modules/qunit/qunit/qunit.js"></script>
+    <script src="./tmp/jquery.js"></script>
+    <script src="./tmp/conditionize2.js"></script>
+    <style type="text/css"> p.conditional { display: block; }</style>
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixturex">
+        <h1>Test Inputs</h1>
+        <div class="test-case single-value">
+            <h2 class="test-case__title">Reference by id</h2>
+            <div class="test-case__content">
+                <label>Text input with id</label>
+                <input type="text" id="text-input1" placeholder="one">
+                <p class="conditional" data-condition="#text-input1 === 'one'">You just typed 'one'!</p>
+            </div>
+        </div>
+        <div class="test-case single-value">
+            <h2 class="test-case__title">Reference by name</h2>
+            <div class="test-case__content">
+                <label>Text input with name</label>
+                <input type="text" name="text-input2" placeholder="two">
+                <p class="conditional" data-condition="text-input2 === 'two'">You just typed 'two'</p>
+            </div>
+        </div>
+        <div class="test-case single-value-with-initial-value">
+            <h2 class="test-case__title">Input with initial value</h2>
+            <div class="test-case__content">
+                <label>text input with initial value</label>
+                <input type="text" name="text-input3" value="three" placeholder="three">
+                <p class="conditional" data-condition="text-input3 === 'three'">You just typed 'three'</p>
+            </div>
+        </div>
+        <div class="test-case single-value">
+            <h2 class="test-case__title">Space and non-ASCII chars at the condition</h2>
+            <div class="test-case__content">
+                <label>text input</label>
+                <input type="text" name="text-input5" placeholder="не ASCII строка">
+                <p class="conditional" data-condition="text-input5 === 'не ASCII строка'">Wow! Even non-ASCII chars are ok!</p>
+            </div>
+        </div>
+        <div class="test-case multivalue">
+            <h2 class="test-case__title">Multivalue input</h2>
+            <div class="test-case__content">
+                <label>Favorite book 1</label><input type="text" name="favorite_book[]">
+                <label>Favorite book 2</label><input type="text" name="favorite_book[]">
+                <label>Favorite book 3</label><input type="text" name="favorite_book[]">
+                <p class="conditional" data-condition="favorite_book[].every(function(x){ return (x !== '')})">You read too much:)</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        $( document ).ready( function() {
+            var documentTitle = $( "h1" )[ 0 ].innerHTML;
+            document.title = documentTitle;
+
+            QUnit.module( documentTitle );
+
+            $( "p.conditional" ).conditionize();
+
+            QUnit.test( "Single-value input without initial value", function( assert ) {
+                $( ".test-case.single-value" ).each( function() {
+                    var input = $( this ).find( "input" )[ 0 ];
+                    var p = $( this ).find( "p.conditional" )[ 0 ];
+                    var title = $( this ).find( ".test-case__title" )[ 0 ].innerHTML;
+
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (initial value)" );
+
+                    $( input ).val( $( input ).attr( "placeholder" ) ).trigger( "change" );
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "block", title + " (after change)" );
+                } );
+            } );
+
+            QUnit.test( "Single-value input with initial value", function( assert ) {
+                $( ".test-case.single-value-with-initial-value" ).each( function() {
+                    var input = $( this ).find( "input" )[ 0 ];
+                    var p = $( this ).find( "p.conditional" )[ 0 ];
+                    var title = $( this ).find( ".test-case__title" )[ 0 ].innerHTML;
+
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "block", title + " (initial value)" );
+
+                    $( input ).val( "" ).trigger( "change" );
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (after change)" );
+                } );
+            } );
+
+            QUnit.test( "Multivalue input", function( assert ) {
+                $( ".test-case.multivalue" ).each( function() {
+                    var inputs = $( this ).find( "input" );
+                    var p = $( this ).find( "p.conditional" )[ 0 ];
+                    var title = $( this ).find( ".test-case__title" )[ 0 ].innerHTML;
+
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (initial state)" );
+
+                    $( inputs[ 0 ] ).val( "one" ).trigger( "change" );
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (one value)" );
+
+                    $( inputs[ 1 ] ).val( "two" ).trigger( "change" );
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (two values)" );
+
+                    $( inputs[ 2 ] ).val( "three" ).trigger( "change" );
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "block", title + " (three values)" );
+
+                    $( inputs[ 1 ] ).val( "" ).trigger( "change" );
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (two values again)" );
+                } );
+            } );
+        } );
+    </script>
+</body>
+</html>

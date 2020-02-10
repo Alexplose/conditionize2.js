@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../node_modules/qunit/qunit/qunit.css">
+    <script src="../node_modules/qunit/qunit/qunit.js"></script>
+    <script src="./tmp/jquery.js"></script>
+    <script src="./tmp/conditionize2.js"></script>
+    <style type="text/css"> p.conditional { display: block; }</style>
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixturex">
+        <h1>Test Name and id parsing</h1>
+        <div class="test-case overlapping">
+            <h2 class="test-case__title">Partially equal names</h2>
+            <div class="test-case__content">
+                <label>These two inputs must be independent</label>
+                <input type="text" name="wierd-input-1" placeholder="foo">
+                <input type="text" name="wierd-input-12" placeholder="foo">
+                <p class="conditional" data-condition="wierd-input-1 === 'foo'">The first one is 'foo'</p>
+                <p class="conditional" data-condition="wierd-input-12 === 'foo'">The second one is 'foo'</p>
+            </div>
+        </div>
+        <div class="test-case overlapping">
+            <h2 class="test-case__title">Partially equal ids</h2>
+            <div class="test-case__content">
+                <label>These two inputs must be independent</label>
+                <input type="text" id="wierd-input-2" placeholder="foo">
+                <input type="text" id="wierd-input-22" placeholder="foo">
+                <p class="conditional" data-condition="#wierd-input-2 === 'foo'">The first one is 'foo'</p>
+                <p class="conditional" data-condition="#wierd-input-22 === 'foo'">The second one is 'foo'</p>
+            </div>
+        </div>
+        <div class="test-case allowed-symbols">
+            <h2 class="test-case__title">Allowed symbols in name</h2>
+            <div class="test-case__content">
+                <label>An input with all allowed symbols</label>
+                <input type="text" name="-some_input-WITH_all-SyMBolS-___-" placeholder="foo">
+                <p class="conditional" data-condition="-some_input-WITH_all-SyMBolS-___- === 'foo'">Works!</p>
+            </div>
+        </div>
+        <div class="test-case allowed-symbols">
+            <h2 class="test-case__title">Allowed symbols in id</h2>
+            <div class="test-case__content">
+                <label>An input with all allowed symbols</label>
+                <input type="text" id="-some_input-WITH_all-SyMBolS-___-" placeholder="foo">
+                <p class="conditional" data-condition="#-some_input-WITH_all-SyMBolS-___- === 'foo'">Works!</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        $( document ).ready( function() {
+            var documentTitle = $( "h1" )[ 0 ].innerHTML;
+            document.title = documentTitle;
+
+            QUnit.module( documentTitle );
+
+            $( "p.conditional" ).conditionize();
+
+            QUnit.test( "Overlapping names or ids", function( assert ) {
+                $( ".test-case.overlapping" ).each( function() {
+                    var title = $( this ).find( ".test-case__title" )[ 0 ].innerHTML;
+                    var input1 = $( this ).find( "input" )[ 0 ];
+                    var input2 = $( this ).find( "input" )[ 1 ];
+                    var p1 = $( this ).find( "p.conditional" )[ 0 ];
+                    var p2 = $( this ).find( "p.conditional" )[ 1 ];
+
+                    $( p1 ).finish();
+                    $( p2 ).finish();
+                    assert.strictEqual( $( p1 ).css( "display" ), "none", title + " (initial state)" );
+                    assert.strictEqual( $( p2 ).css( "display" ), "none", title + " (initial state)" );
+
+                    $( input1 ).val( $( input1 ).attr( "placeholder" ) ).trigger( "change" );
+                    $( p1 ).finish();
+                    $( p2 ).finish();
+                    assert.strictEqual(
+                        $( p1 ).css( "display" ), "block",
+                        title + " (first input changed)"
+                    );
+                    assert.strictEqual(
+                        $( p2 ).css( "display" ), "none",
+                        title + " (first input changed)"
+                    );
+
+                    $( input1 ).val( "" ).trigger( "change" );
+                    $( input2 ).val( $( input2 ).attr( "placeholder" ) ).trigger( "change" );
+                    $( p1 ).finish();
+                    $( p2 ).finish();
+                    assert.strictEqual(
+                        $( p1 ).css( "display" ), "none",
+                        title + " (second input changed)"
+                    );
+                    assert.strictEqual(
+                        $( p2 ).css( "display" ), "block",
+                        title + " (second input changed)"
+                    );
+
+                    $( input1 ).val( $( input1 ).attr( "placeholder" ) ).trigger( "change" );
+                    $( input2 ).val( $( input2 ).attr( "placeholder" ) ).trigger( "change" );
+                    $( p1 ).finish();
+                    $( p2 ).finish();
+                    assert.strictEqual( $( p1 ).css( "display" ), "block", title + " (both changed)" );
+                    assert.strictEqual( $( p2 ).css( "display" ), "block", title + " (both changed)" );
+                } );
+            } );
+
+            QUnit.test( "Allowed symbols", function( assert ) {
+                $( ".test-case.allowed-symbols" ).each( function() {
+                    var input = $( this ).find( "input" )[ 0 ];
+                    var p = $( this ).find( "p.conditional" )[ 0 ];
+                    var title = $( this ).find( ".test-case__title" )[ 0 ].innerHTML;
+
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (initial state)" );
+
+                    $( input ).val( $( input ).attr( "placeholder" ) ).trigger( "change" );
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "block", title + " (after change)" );
+                } );
+            } );
+        } );
+    </script>
+</body>
+</html>

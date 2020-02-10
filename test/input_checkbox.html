@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test checkboxes</title>
+    <link rel="stylesheet" href="../node_modules/qunit/qunit/qunit.css">
+    <script src="../node_modules/qunit/qunit/qunit.js"></script>
+    <script src="./tmp/jquery.js"></script>
+    <script src="./tmp/conditionize2.js"></script>
+    <style type="text/css"> p.conditional { display: block; }</style>
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixturex">
+        <h1>Test Checkboxes</h1>
+        <div class="test-case single-input">
+            <h2 class="test-case__title">Reference by id</h2>
+            <div class="test-case__content">
+                <label><input type="checkbox" id="checkbox1">checkbox with id</label>
+                <p class="conditional" data-condition="#checkbox1">Wow! You just checked me!</p>
+            </div>
+        </div>
+        <div class="test-case single-input">
+            <h2 class="test-case__title">Reference by name</h2>
+            <div class="test-case__content">
+                <label><input type="checkbox" name="checkbox2">checkbox with name</label>
+                <p class="conditional" data-condition="checkbox2">Wow! You just checked me!</p>
+            </div>
+        </div>
+        <div class="test-case single-input">
+            <h2 class="test-case__title">Checkbox with value attribute</h2>
+            <div class="test-case__content">
+                <label><input type="checkbox" name="checkbox3" value="3">checkbox with name and initial value</label>
+                <p class="conditional" data-condition="checkbox3 === '3'">Wow! You just checked me!</p>
+            </div>
+        </div>
+        <div class="test-case single-input-checked">
+            <h2 class="test-case__title">Initially checked checkbox</h2>
+            <div class="test-case__content">
+                <label><input type="checkbox" name="checkbox4" checked>checkbox checked initially</label>
+                <p class="conditional" data-condition="checkbox4">I was here initially or you just checked me:)</p>
+            </div>
+        </div>
+        <div class="test-case single-input-negative">
+            <h2 class="test-case__title">Negative condition</h2>
+            <div class="test-case__content">
+                <label><input type="checkbox" name="checkbox5">checkbox for negative condition</label>
+                <p class="conditional" data-condition="! checkbox5">Check it if you want me to disappear</p>
+            </div>
+        </div>
+        <div class="test-case multivalue">
+            <h2 class="test-case__title">Multivalue checkbox</h2>
+            <div class="test-case__content">
+                <label><input type="checkbox" name="multivalue-checkbox" value="1">Option1</label>
+                <label><input type="checkbox" name="multivalue-checkbox" value="2">Option2</label>
+                <label><input type="checkbox" name="multivalue-checkbox" value="3">Option3</label>
+                <p class="conditional" data-condition="multivalue-checkbox.indexOf('2') !== -1">You checked option2! I saw it!
+                </p>
+            </div>
+        </div>
+    </div>
+    <script>
+        $( document ).ready( function() {
+            var documentTitle = $( "h1" )[ 0 ].innerHTML;
+            document.title = documentTitle;
+
+            QUnit.module( documentTitle );
+
+            $( "p.conditional" ).conditionize();
+
+            QUnit.test( "Single-value checkboox initially not checked", function( assert ) {
+                $( ".test-case.single-input" ).each( function() {
+                    var input = $( this ).find( "input" )[ 0 ];
+                    var p = $( this ).find( "p.conditional" )[ 0 ];
+                    var title = $( this ).find( ".test-case__title" )[ 0 ].innerHTML;
+
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (initial value)" );
+
+                    $( input ).click(); // Trigger click on the checkbox
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "block", title + " (after change)" );
+                } );
+            } );
+
+            QUnit.test( "Single-value checkboox initially checked", function( assert ) {
+                $( ".test-case.single-input-checked" ).each( function() {
+                    var input = $( this ).find( "input" )[ 0 ];
+                    var p = $( this ).find( "p.conditional" )[ 0 ];
+                    var title = $( this ).find( ".test-case__title" )[ 0 ].innerHTML;
+
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "block", title + " (initial value)" );
+
+                    $( input ).click(); // Trigger click on the checkbox
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (after change)" );
+                } );
+            } );
+
+            QUnit.test( "Single-value checkboox with negative condition", function( assert ) {
+                $( ".test-case.single-input-negative" ).each( function() {
+                    var input = $( this ).find( "input" )[ 0 ];
+                    var p = $( this ).find( "p.conditional" )[ 0 ];
+                    var title = $( this ).find( ".test-case__title" )[ 0 ].innerHTML;
+
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "block", title + " (initial value)" );
+
+                    $( input ).click(); // Trigger click on the checkbox
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (after change)" );
+                } );
+            } );
+
+            QUnit.test( "Multivalue checkbox", function( assert ) {
+                $( ".test-case.multivalue" ).each( function() {
+                    var inputs = $( this ).find( "input" );
+                    var p = $( this ).find( "p.conditional" )[ 0 ];
+                    var title = $( this ).find( ".test-case__title" )[ 0 ].innerHTML;
+
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (initial state)" );
+
+                    $( inputs[ 0 ] ).click();
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (first clicked)" );
+
+                    $( inputs[ 1 ] ).click();
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "block", title + " (second clicked)" );
+
+                    $( inputs[ 2 ] ).click();
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "block", title + " (third clicked)" );
+
+                    $( inputs[ 1 ] ).click();
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (second unclicked)" );
+                } );
+            } );
+        } );
+    </script>
+</body>
+</html>

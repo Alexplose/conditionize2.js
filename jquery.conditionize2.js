@@ -1,7 +1,14 @@
 ( function( $ ) {
     $.fn.conditionize = function( options ) {
 
-        // Set options
+        // Set options. NOTE: Replace undefined with 'false'
+        // Visit https://stackoverflow.com/q/33017148/5055891 for more information
+        if ( options && options.hasOwnProperty( "ifFalse" ) && ( options.ifFalse === undefined ) ) {
+            options.ifFalse = false;
+        }
+        if ( options && options.hasOwnProperty( "ifTrue" ) && ( options.ifTrue === undefined ) ) {
+            options.ifTrue = false;
+        }
         var settings = $.extend( {
 
             // Array of events on which to update condition
@@ -65,7 +72,7 @@
             actions.forEach(
                 function( h ) {
                     if ( typeof h === "string" ) {
-                        if ( h.startsWith( "trigger" ) ) {
+                        if ( h.substring( 0, 7 ) === "trigger" ) {
                             if ( h === "trigger" ) {
                                 $.fn.conditionize.actions.trigger( $section, settings.updateOn );
                             } else {

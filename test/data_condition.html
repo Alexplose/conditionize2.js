@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../node_modules/qunit/qunit/qunit.css">
+    <script src="../node_modules/qunit/qunit/qunit.js"></script>
+    <script src="./tmp/jquery.js"></script>
+    <script src="./tmp/conditionize2.js"></script>
+    <style type="text/css"> p.conditional { display: block; }</style>
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixturex">
+        <h1>Complicated conditions</h1>
+        <div class="test-case" id="case1">
+            <h2 class="test-case__title">No space and no parentheses</h2>
+            <div class="test-case__content">
+                <label><input type="checkbox" name="complicated-checkbox1" value="3">Check me</label>
+                <p class="conditional" data-condition="complicated-checkbox1==='3'"></p>
+            </div>
+        </div>
+        <div class="test-case" id="case2">
+            <h2 class="test-case__title">Use functions</h2>
+            <div class="test-case__content">
+                <label><input type="text" name="complicated-input1">Type a number greater than 10 </label>
+                <p class="conditional" data-condition="parseInt(complicated-input1)>10">Wow! Too mush!</p>
+            </div>
+        </div>
+        <div class="test-case" id="case3">
+            <h2 class="test-case__title">Combine many inputs</h2>
+            <div class="test-case__content">
+                <label><input type="checkbox" id="combined-item1">Check me</label>
+                <br>
+                <label>Are you tired?</label>
+                <label><input type="radio" name="combined-item2" value="yes">Yes</label>
+                <label><input type="radio" name="combined-item2" value="no">No</label>
+                <br>
+                <label><input type="text" name="combined-item3">Type a number which square is less than 100 </label>
+                <p class="conditional"
+                    data-condition="#combined-item1 && ( combined-item2==='yes' || parseInt(combined-item3)*parseInt(combined-item3)<100)">
+                    You are whether tired or know some math:)</p>
+            </div>
+        </div>
+        <div class="test-case" id="case4">
+            <h2 class="test-case__title">Array functions</h2>
+            <div class="test-case__content">
+                <label>Your favorite movie 1</label><input type="text" name="favorite_movie[]">
+                <label>Your favorite movie 2</label><input type="text" name="favorite_movie[]">
+                <label>Your favorite movie 3</label><input type="text" name="favorite_movie[]">
+                <p class="conditional all" data-condition="favorite_movie[].every(function(x) {return x !== ''})">You wrote three movies.</p>
+                <p class="conditional zootopia" data-condition="favorite_movie[].some(function(x) {return x.toLowerCase() === 'zootopia'})">I like
+                    Zootopia too.</p>
+                <p class="conditional more-than-one" data-condition="favorite_movie[].filter(function(x) {return x !== ''}).length > 1">More than one
+                    movie. Not bad.</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        $( document ).ready( function() {
+            var documentTitle = $( "h1" )[ 0 ].innerHTML;
+            document.title = documentTitle;
+
+            QUnit.module( documentTitle );
+
+            $( ".conditional" ).conditionize();
+
+            QUnit.test( "No space and no parentheses", function( assert ) {
+                var input = $( "#case1 input" )[ 0 ];
+                var p = $( "#case1 p.conditional" )[ 0 ];
+                var title = $( "#case1 .test-case__title" )[ 0 ].innerHTML;
+
+                $( p ).finish();
+                assert.strictEqual( $( p ).css( "display" ), "none", title + " (initial state)" );
+
+                $( input ).click();
+                $( p ).finish();
+                assert.strictEqual( $( p ).css( "display" ), "block", title + " (after click)" );
+            } );
+
+            QUnit.test( "Use functions", function( assert ) {
+                var input = $( "#case2 input" )[ 0 ];
+                var p = $( "#case2 p.conditional" )[ 0 ];
+                var title = $( "#case2 .test-case__title" )[ 0 ].innerHTML;
+
+                $( p ).finish();
+                assert.strictEqual( $( p ).css( "display" ), "none", title + " (initial state)" );
+
+                $( input ).val( 5 ).trigger( "change" );
+                $( p ).finish();
+                assert.strictEqual( $( p ).css( "display" ), "none", title + " (small number)" );
+
+                $( input ).val( 15 ).trigger( "change" );
+                $( p ).finish();
+                assert.strictEqual( $( p ).css( "display" ), "block", title + " (large number)" );
+
+                $( input ).val( 9 ).trigger( "change" );
+                $( p ).finish();
+                assert.strictEqual( $( p ).css( "display" ), "none", title + " (small number again)" );
+            } );
+
+            QUnit.test( "Combine many inputs", function( assert ) {
+                var title = $( "#case3 .test-case__title" )[ 0 ].innerHTML;
+                var p = $( "#case3 p.conditional" )[ 0 ];
+                var input1 = $( "#case3 input[type='checkbox']" )[ 0 ];
+                var input2yes = $( "#case3 input[type='radio'][value='yes']" )[ 0 ];
+                var input2no = $( "#case3 input[type='radio'][value='no']" )[ 0 ];
+                var input3 = $( "#case3 input[type='text']" )[ 0 ];
+
+                $( p ).finish();
+                assert.strictEqual( $( p ).css( "display" ), "none", title + " (initial state)" );
+
+                $( input1 ).click();
+                $( p ).finish();
+                assert.strictEqual( $( p ).css( "display" ), "none", title + " (after click)" );
+
+                $( input2no ).click();
+                $( p ).finish();
+                assert.strictEqual( $( p ).css( "display" ), "none", title + " (after choosing 'no')" );
+
+                $( input3 ).val( 15 ).trigger( "change" );
+                $( p ).finish();
+                assert.strictEqual( $( p ).css( "display" ), "none", title + " (after typing 15)" );
+
+                $( input3 ).val( 5 ).trigger( "change" );
+                $( p ).finish();
+                assert.strictEqual( $( p ).css( "display" ), "block", title + " (after typing 5)" );
+
+                $( input2yes ).click();
+                $( input3 ).val( 15 ).trigger( "change" );
+                $( p ).finish();
+                assert.strictEqual(
+                    $( p ).css( "display" ), "block",
+                    title + " (after choosing 'yes')"
+                );
+
+                $( input1 ).click();
+                $( p ).finish();
+                assert.strictEqual(
+                    $( p ).css( "display" ), "none",
+                    title + " (after unchecking the checkbox)"
+                );
+            } );
+
+            QUnit.test( "Combine many inputs", function( assert ) {
+                var title = $( "#case4 .test-case__title" )[ 0 ].innerHTML;
+                var inputs = $( "#case4 input" );
+                var pAll = $( "#case4 p.conditional.all" )[ 0 ];
+                var pZootopia = $( "#case4 p.conditional.zootopia" )[ 0 ];
+                var pMoreThanOne = $( "#case4 p.conditional.more-than-one" )[ 0 ];
+
+                $( pAll ).finish();
+                $( pZootopia ).finish();
+                $( pMoreThanOne ).finish();
+                assert.strictEqual( $( pAll ).css( "display" ), "none", title + " (initial state)" );
+                assert.strictEqual( $( pZootopia ).css( "display" ), "none", title + " (initial state)" );
+                assert.strictEqual(
+                    $( pMoreThanOne ).css( "display" ), "none",
+                    title + " (initial state)"
+                );
+
+                $( inputs[ 0 ] ).val( "a" ).trigger( "change" );
+                $( pAll ).finish();
+                $( pZootopia ).finish();
+                $( pMoreThanOne ).finish();
+                assert.strictEqual( $( pAll ).css( "display" ), "none", title + " (only first one)" );
+                assert.strictEqual( $( pZootopia ).css( "display" ), "none", title + " (only first one)" );
+                assert.strictEqual(
+                    $( pMoreThanOne ).css( "display" ), "none",
+                    title + " (only first one)"
+                );
+
+                $( inputs[ 1 ] ).val( "b" ).trigger( "change" );
+                $( pAll ).finish();
+                $( pZootopia ).finish();
+                $( pMoreThanOne ).finish();
+                assert.strictEqual( $( pAll ).css( "display" ), "none", title + " (only first two)" );
+                assert.strictEqual( $( pZootopia ).css( "display" ), "none", title + " (only first two)" );
+                assert.strictEqual(
+                    $( pMoreThanOne ).css( "display" ), "block",
+                    title + " (only first two)"
+                );
+
+                $( inputs[ 2 ] ).val( "c" ).trigger( "change" );
+                $( pAll ).finish();
+                $( pZootopia ).finish();
+                $( pMoreThanOne ).finish();
+                assert.strictEqual( $( pAll ).css( "display" ), "block", title + " (all three)" );
+                assert.strictEqual( $( pZootopia ).css( "display" ), "none", title + " (all three)" );
+                assert.strictEqual( $( pMoreThanOne ).css( "display" ), "block", title + " (all three)" );
+
+                $( inputs[ 0 ] ).val( "" ).trigger( "change" );
+                $( inputs[ 1 ] ).val( "zootopia" ).trigger( "change" );
+                $( inputs[ 2 ] ).val( "c" ).trigger( "change" );
+                $( pAll ).finish();
+                $( pZootopia ).finish();
+                $( pMoreThanOne ).finish();
+                assert.strictEqual( $( pAll ).css( "display" ), "none", title + " (zootopia)" );
+                assert.strictEqual( $( pZootopia ).css( "display" ), "block", title + " (zootopia)" );
+                assert.strictEqual( $( pMoreThanOne ).css( "display" ), "block", title + " (zootopia)" );
+            } );
+        } );
+    </script>
+</body>
+</html>

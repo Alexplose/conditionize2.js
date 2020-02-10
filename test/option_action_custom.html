@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../node_modules/qunit/qunit/qunit.css">
+    <script src="../node_modules/qunit/qunit/qunit.js"></script>
+    <script src="./tmp/jquery.js"></script>
+    <script src="./tmp/conditionize2.js"></script>
+    <style type="text/css">
+        p.conditional {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixturex">
+        <h1>Test custom actions</h1>
+        <div class="test-case" id="case1">
+            <h2 class="test-case__title">Custom actions</h2>
+            <div class="test-case__content">
+                <label><input type="checkbox" class="triggering" id="checkbox1">Toggle to increment counters</label>
+                <p class="conditional" data-condition="#checkbox1">This text will not be affected.</p>
+                <label>Checked n times: </label><input class="check-count" type="text" value="0" disabled>
+                <label>Unchecked n times: </label><input class="uncheck-count" type="text" value="0" disabled>
+                <script>
+                    $( ".conditional" ).conditionize( {
+                        onload: false,
+                        ifTrue: function() {
+                            $( "#case1 input.check-count" ).val(
+                                parseInt( $( "#case1 input.check-count" ).val() ) + 1
+                            );
+                        },
+                        ifFalse: function() {
+                            $( "#case1 input.uncheck-count" ).val(
+                                parseInt( $( "#case1 input.uncheck-count" ).val() ) + 1
+                            );
+                        }
+                    } );
+
+                    QUnit.test( "Update on keyup", function( assert ) {
+                        var triggeringInput = $( "#case1 input.triggering" )[ 0 ];
+                        var checkCount = $( "#case1 input.check-count" )[ 0 ];
+                        var uncheckCount = $( "#case1 input.uncheck-count" )[ 0 ];
+                        var p = $( "#case1 p.conditional" )[ 0 ];
+                        var title = $( "#case1 .test-case__title" )[ 0 ].innerHTML;
+
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "block", title + " (initial state)" );
+                        assert.strictEqual( $( checkCount ).val(), "0", title + " (initial state)" );
+                        assert.strictEqual( $( uncheckCount ).val(), "0", title + " (initial state)" );
+
+                        $( triggeringInput ).click();
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "block", title + " (first click)" );
+                        assert.strictEqual( $( checkCount ).val(), "1", title + " (first click)" );
+                        assert.strictEqual( $( uncheckCount ).val(), "0", title + " (first click)" );
+
+                        $( triggeringInput ).click();
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "block", title + " (second click)" );
+                        assert.strictEqual( $( checkCount ).val(), "1", title + " (second click)" );
+                        assert.strictEqual( $( uncheckCount ).val(), "1", title + " (second click)" );
+
+                        $( triggeringInput ).click();
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "block", title + " (third click)" );
+                        assert.strictEqual( $( checkCount ).val(), "2", title + " (third click)" );
+                        assert.strictEqual( $( uncheckCount ).val(), "1", title + " (third click)" );
+                    } );
+                </script>
+            </div>
+        </div>
+    </div>
+</body>

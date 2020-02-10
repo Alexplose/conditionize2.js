@@ -3,6 +3,10 @@
     "env": {
         "browser": true,
         "es6": false,
-        "jquery": true
-    }
+        "jquery": true,
+        "qunit": true
+    },
+    "plugins": [
+        "html"
+    ]
 }

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../node_modules/qunit/qunit/qunit.css">
+    <script src="../node_modules/qunit/qunit/qunit.js"></script>
+    <script src="./tmp/jquery.js"></script>
+    <script src="./tmp/conditionize2.js"></script>
+    <style type="text/css"> p.conditional { display: block; }</style>
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixturex">
+        <h1>Test Combined/nested</h1>
+        <div class="test-case">
+            <h2 class="test-case__title">You can even nest the conditional sections:</h2>
+            <div class="test-case__content">
+                <label><input type="checkbox" class="level1" name="nested-level1">Are you sure?</label>
+                <div class="conditional level1" data-condition="nested-level1">
+                    <label><input type="checkbox" class="level2" name="nested-level2"> Really super sure?</label>
+                    <div class="conditional level2" data-condition="nested-level2">
+                        <label>Then type "foo": </label>
+                        <input type="text" class="level3" name="nested-level3" placeholder="foo">
+                        <p class="conditional level3" data-condition="nested-level3 === 'foo'">Both are checked and 'foo' is typed.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $( document ).ready( function() {
+            var documentTitle = $( "h1" )[ 0 ].innerHTML;
+            document.title = documentTitle;
+
+            QUnit.module( documentTitle );
+
+            $( ".conditional" ).conditionize();
+
+            QUnit.test( "Test nested conditional blocks", function( assert ) {
+                $( ".test-case" ).each( function() {
+                    var title = $( this ).find( ".test-case__title" )[ 0 ].innerHTML;
+                    var inputLevel1 = $( this ).find( "input.level1" );
+                    var conditionalLevel1 = $( this ).find( ".conditional.level1" );
+                    var inputLevel2 = $( this ).find( "input.level2" );
+                    var conditionalLevel2 = $( this ).find( ".conditional.level2" );
+                    var inputLevel3 = $( this ).find( "input.level3" );
+                    var conditionalLevel3 = $( this ).find( ".conditional.level3" );
+
+                    $( conditionalLevel3 ).finish();
+                    $( conditionalLevel2 ).finish();
+                    $( conditionalLevel1 ).finish();
+
+                    assert.strictEqual(
+                        $( conditionalLevel1 ).css( "display" ), "none",
+                        title + "(initial state)"
+                    );
+                    assert.strictEqual(
+                        $( conditionalLevel2 ).css( "display" ), "none",
+                        title + "(initial state)"
+                    );
+                    assert.strictEqual(
+                        $( conditionalLevel3 ).css( "display" ), "none",
+                        title + "(initial state)"
+                    );
+
+                    $( inputLevel1 ).click();
+                    $( conditionalLevel1 ).finish();
+                    assert.strictEqual(
+                        $( conditionalLevel1 ).css( "display" ), "block",
+                        title + "(level1 clicked)"
+                    );
+                    assert.strictEqual(
+                        $( conditionalLevel2 ).css( "display" ), "none",
+                        title + "(level1 clicked)"
+                    );
+                    assert.strictEqual(
+                        $( conditionalLevel3 ).css( "display" ), "none",
+                        title + "(level1 clicked)"
+                    );
+
+                    $( inputLevel2 ).click();
+                    $( conditionalLevel2 ).finish();
+                    assert.strictEqual(
+                        $( conditionalLevel1 ).css( "display" ), "block",
+                        title + "(level2 clicked)"
+                    );
+                    assert.strictEqual(
+                        $( conditionalLevel2 ).css( "display" ), "block",
+                        title + "(level2 clicked)"
+                    );
+                    assert.strictEqual(
+                        $( conditionalLevel3 ).css( "display" ), "none",
+                        title + "(level2 clicked)"
+                    );
+
+                    $( inputLevel3 ).val( "foo" ).change();
+                    $( conditionalLevel3 ).finish();
+                    assert.strictEqual(
+                        $( conditionalLevel1 ).css( "display" ), "block",
+                        title + "(level3 typed)"
+                    );
+                    assert.strictEqual(
+                        $( conditionalLevel2 ).css( "display" ), "block",
+                        title + "(level3 typed)"
+                    );
+                    assert.strictEqual(
+                        $( conditionalLevel3 ).css( "display" ), "block",
+                        title + "(level3 typed)"
+                    );
+
+                    $( inputLevel2 ).click();
+                    $( conditionalLevel2 ).finish();
+                    assert.strictEqual(
+                        $( conditionalLevel1 ).css( "display" ), "block",
+                        title + "(level2 clicked again)"
+                    );
+                    assert.strictEqual(
+                        $( conditionalLevel2 ).css( "display" ), "none",
+                        title + "(level2 clicked again)"
+                    );
+                    assert.strictEqual(
+                        $( conditionalLevel3 ).css( "display" ), "block",
+                        title + "(level2 clicked again)"
+                    );
+                    assert.strictEqual( $( inputLevel3 ).val(), "foo", title + "(level2 clicked again)" );
+                } );
+            } );
+        } );
+    </script>
+</body>
+</html>

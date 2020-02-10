@@ -7,10 +7,10 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./test.sh",
     "minify": "./node_modules/.bin/uglifyjs -m --keep-fnames jquery.conditionize2.js > jquery.conditionize2.min.js",
     "add_minified": "git add jquery.conditionize2.min.js",
-    "lint": "./node_modules/.bin/eslint --fix jquery.conditionize2.js"
+    "lint": "./node_modules/.bin/eslint --fix jquery.conditionize2.js test/*.html"
   },
   "pre-commit": [
     "minify",
@@ -30,9 +30,29 @@
     "url": "https://github.com/rguliev/conditionize2.js/issues"
   },
   "homepage": "https://github.com/rguliev/conditionize2.js#readme",
+  "dependencies": {
+    "jquery": "*"
+  },
   "devDependencies": {
     "eslint": "^5.12.1",
     "eslint-config-jquery": "^1.0.1",
-    "pre-commit": "^1.2.2"
+    "eslint-plugin-html": "^6.0.0",
+    "jquery1_9": "npm:jquery@1.9.x",
+    "jquery1_11": "npm:jquery@1.11.x",
+    "jquery1_12": "npm:jquery@1.12.x",
+    "jquery2_1": "npm:jquery@2.1.x",
+    "jquery2_2": "npm:jquery@2.2.x",
+    "jquery3_0": "npm:jquery@3.0.x",
+    "jquery3_1": "npm:jquery@3.1.x",
+    "jquery3_2": "npm:jquery@3.2.x",
+    "jquery3_3": "npm:jquery@3.3.x",
+    "jquery3_4": "npm:jquery@3.4.x",
+    "jquery1_latest": "npm:jquery@1.x",
+    "jquery2_latest": "npm:jquery@2.x",
+    "jquery3_latest": "npm:jquery@3.x",
+    "node-qunit-phantomjs": "^2.1.0",
+    "pre-commit": "^1.2.2",
+    "qunit": "^2.9.3",
+    "uglify-js": "^3.4.9"
   }
 }

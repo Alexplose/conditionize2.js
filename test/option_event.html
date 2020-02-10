@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../node_modules/qunit/qunit/qunit.css">
+    <script src="../node_modules/qunit/qunit/qunit.js"></script>
+    <script src="./tmp/jquery.js"></script>
+    <script src="./tmp/conditionize2.js"></script>
+    <style type="text/css">
+        p.conditional {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixturex">
+        <h1>Options: Update events</h1>
+        <div class="test-case" id="case1">
+            <h2 class="test-case__title">Set an event for conditions update by string</h2>
+            <div class="test-case__content">
+                <label><input type="text" name="input-onkeyup" placeholder="foo"></label>
+                <p class="conditional" data-condition="input-onkeyup==='foo'">Works with keyup!</p>
+                <script>
+                    $( "#case1 p.conditional" ).conditionize( {
+                        updateOn: "keyup"
+                    } );
+
+                    QUnit.test( "Update on keyup", function( assert ) {
+                        var input = $( "#case1 input" )[ 0 ];
+                        var p = $( "#case1 p.conditional" )[ 0 ];
+                        var title = $( "#case1 .test-case__title" )[ 0 ].innerHTML;
+
+                        input.value = "foo";
+                        $( input ).trigger( "change" );
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "none", title + " (change correct)" );
+                        $( input ).trigger( "keyup" );
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "block", title + " (keyup correct)" );
+
+                        input.value = "fooo";
+                        $( input ).trigger( "change" );
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "block", title + " (change incorrect)" );
+                        $( input ).trigger( "keyup" );
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "none", title + " (keyup incorrect)" );
+                    } );
+                </script>
+            </div>
+        </div>
+        <div class="test-case" id="case2">
+            <h2 class="test-case__title">Set an event for conditions update by array</h2>
+            <div class="test-case__content">
+                <label><input type="text" name="input-onkeyup2" placeholder="foo"></label>
+                <p class="conditional" data-condition="input-onkeyup2==='foo'">Works with keyup array!</p>
+                <script>
+                    $( "#case2 p.conditional" ).conditionize( {
+                        updateOn: [ "keyup" ]
+                    } );
+
+                    QUnit.test( "Update on keyup (by array)", function( assert ) {
+                        var input = $( "#case2 input" )[ 0 ];
+                        var p = $( "#case2 p.conditional" )[ 0 ];
+                        var title = $( "#case2 .test-case__title" )[ 0 ].innerHTML;
+
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "none", title + " (initial state)" );
+
+                        input.value = "foo";
+
+                        $( input ).trigger( "change" );
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "none", title + " (change correct)" );
+
+                        $( input ).trigger( "keyup" );
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "block", title + " (keyup correct)" );
+
+                        input.value = "fooo";
+
+                        $( input ).trigger( "change" );
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "block", title + " (change incorrect)" );
+
+                        $( input ).trigger( "keyup" );
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "none", title + " (keyup incorrect)" );
+                    } );
+                </script>
+            </div>
+        </div>
+        <div class="test-case" id="case3">
+            <h2 class="test-case__title">Many events</h2>
+            <div class="test-case__content">
+                <label><input type="text" name="input-onkeyup3" placeholder="foo"></label>
+                <p class="conditional" data-condition="input-onkeyup3==='foo'">Works with many events in one string!s</p>
+                <script>
+                    $( "#case3 p.conditional" ).conditionize( {
+                        updateOn: [ "change", "mouseleave" ]
+                    } );
+                    QUnit.test( "Multievent", function( assert ) {
+                            var input = $( "#case3 input" )[ 0 ];
+                            var p = $( "#case3 p.conditional" )[ 0 ];
+                            var title = $( "#case3 .test-case__title" )[ 0 ].innerHTML;
+
+                            $( p ).finish();
+                            assert.strictEqual( $( p ).css( "display" ), "none", title + " (initial state)" );
+
+                            input.value = "foo";
+
+                            $( input ).trigger( "keyup" );
+                            $( p ).finish();
+                            assert.strictEqual( $( p ).css( "display" ), "none", title + " (keyup correct)" );
+
+                            $( input ).trigger( "change" );
+                            $( p ).finish();
+                            assert.strictEqual( $( p ).css( "display" ), "block", title + " (change correct)" );
+
+
+                            input.value = "fooo";
+
+                            $( input ).trigger( "keydown" );
+                            $( p ).finish();
+                            assert.strictEqual( $( p ).css( "display" ), "block", title + " (keydown incorrect)" );
+
+                            $( input ).trigger( "mouseleave" );
+                            $( p ).finish();
+                            assert.strictEqual( $( p ).css( "display" ), "none", title + " (leave incorrect)" );
+                        } );
+                </script>
+            </div>
+        </div>
+        <div class="test-case" id="case4">
+            <h2 class="test-case__title">Custom event</h2>
+            <div class="test-case__content">
+                <button class="button-custom">Update!</button>
+                <label><input type="checkbox" id="options-checkbox1">Some checkbox. You can toggle it. It does not work
+                    without the button.</label>
+                <p class="conditional" data-condition="#options-checkbox1">This one will be updated only after the
+                    button click!</p>
+                <script>
+                    $( "#case4 .button-custom" ).click( function() {
+                        $( "#options-checkbox1" ).trigger( {
+                            type: "buttonWasClicked",
+                            message: "The button was clicked"
+                        } );
+                    } );
+                    $( "#case4 p.conditional" ).conditionize( {
+                        updateOn: [ "buttonWasClicked" ]
+                    } );
+                    QUnit.test( "Custom event", function( assert ) {
+                        var input = $( "#case4 input" )[ 0 ];
+                        var p = $( "#case4 p.conditional" )[ 0 ];
+                        var title = $( "#case4 .test-case__title" )[ 0 ].innerHTML;
+                        var button = $( "#case4 .button-custom" )[ 0 ];
+
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "none", title + " (initial state)" );
+
+                        $( input ).click();
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "none", title + " (checked before button click)" );
+                        $( button ).click();
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "block", title + " (checked after button click)" );
+
+                        $( input ).click();
+                        $( p ).finish();
+                        assert.strictEqual(
+                            $( p ).css( "display" ), "block",
+                            title + " (unchecked before button click)"
+                        );
+                        $( button ).click();
+                        $( p ).finish();
+                        assert.strictEqual(
+                            $( p ).css( "display" ), "none",
+                            title + " (unchecked after button click)"
+                        );
+                    } );
+                </script>
+            </div>
+        </div>
+        <div class="test-case" id="case5">
+            <h2 class="test-case__title">Do not update on load</h2>
+            <div class="test-case__content">
+                <label><input type="checkbox" id="options-checkbox2">Some checkbox. You can toggle it.</label>
+                <p class="conditional" data-condition="#options-checkbox2">This one is ignored on page load, but
+                    it works if you toggle the checkbox.</p>
+                <script>
+                    $( "#case5 p.conditional" ).conditionize( {
+                        onload: false
+                    } );
+                    QUnit.test( "Do not update on load", function( assert ) {
+                        var input = $( "#case5 input" )[ 0 ];
+                        var p = $( "#case5 p.conditional" )[ 0 ];
+                        var title = $( "#case5 .test-case__title" )[ 0 ].innerHTML;
+
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "block", title + " (initial state)" );
+
+                        $( input ).click();
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "block", title + " (checked)" );
+
+                        $( input ).click();
+                        $( p ).finish();
+                        assert.strictEqual( $( p ).css( "display" ), "none", title + " (unchecked)" );
+                    } );
+                </script>
+            </div>
+        </div>
+    </div>
+    <script>
+        $( document ).ready( function() {
+            var documentTitle = $( "h1" )[ 0 ].innerHTML;
+            document.title = documentTitle;
+
+            QUnit.module( documentTitle );
+        } );
+    </script>
+</body>

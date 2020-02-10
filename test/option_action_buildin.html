@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../node_modules/qunit/qunit/qunit.css">
+    <script src="../node_modules/qunit/qunit/qunit.js"></script>
+    <script src="./tmp/jquery.js"></script>
+    <script src="./tmp/conditionize2.js"></script>
+    <style type="text/css">
+        p.conditional {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixturex">
+
+        <h1>Test build-in actions</h1>
+
+        <div class="test-case" id="case1">
+            <h2 class="test-case__title">Show and Hide</h2>
+            <div class="test-case__content">
+                <label><input type="checkbox" id="case1-checkbox">Toggle it</label>
+                <p class="conditional1" data-condition="#case1-checkbox">Show if true, hide if false</p>
+                <p class="conditional2" data-condition="#case1-checkbox">Hide if false, show if true</p>
+                <script>
+                    $( "#case1 p.conditional1" ).conditionize( {
+                        ifTrue: "show",
+                        ifFalse: "hide"
+                    } );
+                    $( "#case1 p.conditional2" ).conditionize( {
+                        ifTrue: "hide",
+                        ifFalse: "show"
+                    } );
+
+                    var title = $( "#case1 .test-case__title" )[ 0 ].innerHTML;
+                    QUnit.test( title, function( assert ) {
+                        var input = $( "#case1-checkbox" )[ 0 ];
+                        var p1 = $( "#case1 p.conditional1" )[ 0 ];
+                        var p2 = $( "#case1 p.conditional2" )[ 0 ];
+
+                        var title = $( "#case1 .test-case__title" )[ 0 ].innerHTML;
+
+                        $( p1 ).finish();
+                        $( p2 ).finish();
+                        assert.strictEqual( $( p1 ).css( "display" ), "none", title + " (initial state)" );
+                        assert.strictEqual( $( p2 ).css( "display" ), "block", title + " (initial state)" );
+
+                        $( input ).click();
+                        $( p1 ).finish();
+                        $( p2 ).finish();
+                        assert.strictEqual( $( p1 ).css( "display" ), "block", title + " (first click)" );
+                        assert.strictEqual( $( p2 ).css( "display" ), "none", title + " (first click)" );
+
+                        $( input ).click();
+                        $( p1 ).finish();
+                        $( p2 ).finish();
+                        assert.strictEqual( $( p1 ).css( "display" ), "none", title + " (second click)" );
+                        assert.strictEqual( $( p2 ).css( "display" ), "block", title + " (second click)" );
+                    } );
+                </script>
+            </div>
+        </div>
+        <div class="test-case" id="case2">
+            <h2 class="test-case__title">Clear fields</h2>
+            <div class="test-case__content">
+                <label><input type="checkbox" id="case2-checkbox">Check it after filling fields bellow</label>
+                <div class="conditional" data-condition="#case2-checkbox">
+                    <p>Check the checkbox to clear all fields</p>
+                    <p>
+                        <label>text input</label>
+                        <input type="text" value="foo">
+                    </p>
+                    <p>
+                        <label><input type="checkbox" checked>checkbox input</label>
+                    </p>
+                    <p>
+                        <label><input type="radio" name="radio" value="1" checked>radio buttons</label>
+                        <label><input type="radio" name="radio" value="2">radio buttons</label>
+                    </p>
+                    <p>
+                        <select>
+                            <option value="">...</option>
+                            <option value="1">one</option>
+                            <option value="2">two</option>
+                            <option value="3" selected>three</option>
+                        </select>
+                    </p>
+                </div>
+                <script>
+                    $( ".conditional" ).conditionize( {
+                        ifTrue: "clearFields",
+                        ifFalse: "ignore"
+                    } );
+
+                    var title = $( "#case2 .test-case__title" )[ 0 ].innerHTML;
+                    QUnit.test( title, function( assert ) {
+                        var input = $( "#case2-checkbox" )[ 0 ];
+                        var conditional = $( "#case2 div.conditional" )[ 0 ];
+
+                        assert.strictEqual(
+                            $( conditional ).find( "input[type='text']" ).val(),
+                            "foo",
+                            title + " (initial state)"
+                        );
+                        assert.strictEqual(
+                            $( conditional ).find( "input[type='checkbox']" ).is( ":checked" ),
+                            true,
+                            title + " (initial state)"
+                        );
+                        assert.strictEqual(
+                            $( conditional ).find( "input[name='radio']:checked" ).val(),
+                            "1",
+                            title + " (initial state)"
+                        );
+                        assert.strictEqual(
+                            $( conditional ).find( "select" ).val(),
+                            "3",
+                            title + " (initial state)"
+                        );
+
+                        $( input ).click();
+
+                        assert.strictEqual(
+                            $( conditional ).find( "input[type='text']" ).val(),
+                            "",
+                            title + " (after click)"
+                        );
+                        assert.strictEqual(
+                            $( conditional ).find( "input[type='checkbox']" ).is( ":checked" ),
+                            false,
+                            title + " (after click)"
+                        );
+                        assert.strictEqual(
+                            $( conditional ).find( "input[name='radio']:checked" ).val(),
+                            undefined,
+                            title + " (after click)"
+                        );
+                        assert.strictEqual(
+                            $( conditional ).find( "select" ).val(),
+                            "",
+                            title + " (after click)"
+                        );
+                    } );
+                </script>
+            </div>
+        </div>
+        <div class="test-case" id="case3">
+            <h2 class="test-case__title">Combine clear and hide</h2>
+            <div class="test-case__content">
+                <label><input type="checkbox" id="case3-checkbox" checked>Uncheck it after filling the input
+                    bellow</label>
+                <div class="conditional" data-condition="#case3-checkbox">
+                    <p>Check the checkbox to clear the input and hide it</p>
+                    <label>text input</label>
+                    <input type="text" value="foo">
+                </div>
+                <script>
+                    $( "#case3 div.conditional" ).conditionize( {
+                        ifTrue: "show",
+                        ifFalse: [ "hide", "clearFields" ]
+                    } );
+
+                    var title = $( "#case3 .test-case__title" )[ 0 ].innerHTML;
+                    QUnit.test( title, function( assert ) {
+                        var input = $( "#case3-checkbox" )[ 0 ];
+                        var conditional = $( "#case3 div.conditional" )[ 0 ];
+
+                        $( conditional ).finish();
+                        assert.strictEqual( $( conditional ).css( "display" ), "block", title + " (initial state)" );
+                        assert.strictEqual(
+                            $( conditional ).find( "input[type='text']" ).val(),
+                            "foo",
+                            title + " (initial state)"
+                        );
+
+                        $( input ).click();
+                        $( conditional ).finish();
+                        assert.strictEqual( $( conditional ).css( "display" ), "none", title + " (after click)" );
+                        assert.strictEqual(
+                            $( conditional ).find( "input[type='text']" ).val(),
+                            "",
+                            title + " (after click)"
+                        );
+                    } );
+                </script>
+            </div>
+        </div>
+        <div class="test-case" id="case4">
+            <h2 class="test-case__title">Trigger events</h2>
+            <div class="test-case__content">
+                <label><input type="checkbox" id="case4-checkbox">Check it to trigger events</label>
+                <p class="conditional change" data-condition="#case4-checkbox"></p>
+                <p class="conditional click" data-condition="#case4-checkbox"></p>
+                <p class="conditional click-and-custom" data-condition="#case4-checkbox"></p>
+                <script>
+                    $( "#case4 p.conditional.change" ).conditionize( {
+                        ifTrue: "trigger",
+                        ifFalse: "ignore"
+                    } );
+                    $( "#case4 p.conditional.change" ).change( function() {
+                        $( this ).text( "change" );
+                    } );
+
+                    $( "#case4 p.conditional.click" ).conditionize( {
+                        ifTrue: "trigger:click",
+                        ifFalse: "ignore"
+                    } );
+                    $( "#case4 p.conditional.click" ).click( function() {
+                        $( this ).text( "click" );
+                    } );
+
+                    $( "#case4 p.conditional.click-and-custom" ).conditionize( {
+                        ifTrue: "trigger:click customEvent",
+                        ifFalse: "ignore"
+                    } );
+                    $( "#case4 p.conditional.click-and-custom" ).on( "customEvent", function() {
+                        $( this ).text( $( this ).text() + "customEvent" );
+                    } );
+                    $( "#case4 p.conditional.click-and-custom" ).click( function() {
+                        $( this ).text( $( this ).text() + "click" );
+                    } );
+
+                    var title = $( "#case4 .test-case__title" )[ 0 ].innerHTML;
+                    QUnit.test( title, function( assert ) {
+                        var input = $( "#case4-checkbox" )[ 0 ];
+                        var conditionalChange = $( "#case4 p.conditional.change" )[ 0 ];
+                        var conditionalClick = $( "#case4 p.conditional.click" )[ 0 ];
+                        var conditionalClickAndCustom = $( "#case4 p.conditional.click-and-custom" )[ 0 ];
+
+                        $( input ).click();
+                        $( conditionalChange ).finish();
+                        $( conditionalClick ).finish();
+                        $( conditionalClickAndCustom ).finish();
+                        assert.strictEqual( $( conditionalChange ).text(), "change", title + " (change after click)" );
+                        assert.strictEqual( $( conditionalClick ).text(), "click", title + " (click after click)" );
+                        assert.strictEqual(
+                            $( conditionalClickAndCustom ).text(),
+                            "clickcustomEvent",
+                            title + " (click and custom after click)"
+                        );
+                    } );
+                </script>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>

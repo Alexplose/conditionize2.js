@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../node_modules/qunit/qunit/qunit.css">
+    <script src="../node_modules/qunit/qunit/qunit.js"></script>
+    <script src="./tmp/jquery.js"></script>
+    <script src="./tmp/conditionize2.js"></script>
+    <style type="text/css">
+        p.conditional {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixturex">
+        <h1>Test ignore action</h1>
+        <div class="test-case" id="case1">
+            <h2 class="test-case__title">Ignore</h2>
+            <div class="test-case__content">
+                <label><input type="checkbox" name="ignore" class="triggering" checked>Toggle it</label>
+
+                <p class="conditional iftrue null" data-condition="ignore">Null</p>
+                <p class="conditional iftrue false" data-condition="ignore">False</p>
+                <p class="conditional iftrue undefined" data-condition="ignore">Undefined</p>
+                <p class="conditional iftrue ignore" data-condition="ignore">Ignore</p>
+                <p class="conditional iftrue empty" data-condition="ignore">Empty</p>
+
+                <p class="conditional iffalse null" data-condition="!ignore">Null</p>
+                <p class="conditional iffalse false" data-condition="!ignore">False</p>
+                <p class="conditional iffalse undefined" data-condition="!ignore">Undefined</p>
+                <p class="conditional iffalse ignore" data-condition="!ignore">Ignore</p>
+                <p class="conditional iffalse empty" data-condition="!ignore">Empty</p>
+
+                <script>
+                    $( "p.conditional.iftrue.null" ).conditionize( { ifTrue: null } );
+                    $( "p.conditional.iftrue.false" ).conditionize( { ifTrue: false } );
+                    $( "p.conditional.iftrue.undefined" ).conditionize( { ifTrue: undefined } );
+                    $( "p.conditional.iftrue.ignore" ).conditionize( { ifTrue: "ignore" } );
+                    $( "p.conditional.iftrue.empty" ).conditionize( { ifTrue: [] } );
+
+                    $( "p.conditional.iffalse.null" ).conditionize( { ifFalse: null } );
+                    $( "p.conditional.iffalse.false" ).conditionize( { ifFalse: false } );
+                    $( "p.conditional.iffalse.undefined" ).conditionize( { ifFalse: undefined } );
+                    $( "p.conditional.iffalse.ignore" ).conditionize( { ifFalse: "ignore" } );
+                    $( "p.conditional.iffalse.empty" ).conditionize( { ifFalse: [] } );
+
+                    QUnit.test( "ignore options", function( assert ) {
+                        var triggeringInput = $( "#case1 input.triggering" )[ 0 ];
+                        var title = $( "#case1 .test-case__title" )[ 0 ].innerHTML;
+
+                        $( "#case1 p.conditional" ).each( function() {
+                            $( this ).finish();
+                            assert.strictEqual(
+                                $( this ).css( "display" ), "block",
+                                title + " " + $( this ).attr( "class" ) + " (initial state)"
+                            );
+                        } );
+
+                        $( triggeringInput ).click();
+                        $( "#case1 p.conditional" ).each( function() {
+                            $( this ).finish();
+                            var display = $( this ).hasClass( "iftrue" ) ? "none" : "block";
+                            assert.strictEqual(
+                                $( this ).css( "display" ), display,
+                                title + " " +  $( this ).attr( "class" )  + " (first click)"
+                            );
+                        } );
+
+                        $( triggeringInput ).click();
+                        $( "#case1 p.conditional" ).each( function() {
+                            $( this ).finish();
+                            var display = $( this ).hasClass( "iftrue" ) ? "none" : "block";
+                            assert.strictEqual(
+                                $( this ).css( "display" ), display,
+                                title + " " + $( this ).attr( "class" ) + " (second click)"
+                            );
+                        } );
+                    } );
+                </script>
+            </div>
+        </div>
+    </div>
+</body>

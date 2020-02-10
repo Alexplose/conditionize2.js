@@ -7,10 +7,10 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="../jquery.conditionize2.js"></script>
         <script type="text/javascript">
-            $(document).ready(function() {
-                $('.conditional').conditionize();
-                w3_open();
-            });
+            $( document ).ready( function() {
+                $( ".conditional" ).conditionize();
+                w3Open();
+            } );
         </script>
         <style type="text/css">
             .msg {
@@ -26,15 +26,15 @@
     <body>
         <!-- Sidebar -->
         <div class="w3-sidebar w3-bar-block w3-border-right" style="display:none;width:25%" id="sidebar">
-          <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+          <button onclick="w3Close()" class="w3-bar-item w3-large">Close &times;</button>
         </div>
-        
+
         <!-- Page Content -->
         <div class="w3-container w3-blue-grey w3-padding" id="page-content">
-            <h1><button class="w3-button w3-xlarge" onclick="w3_open()">☰</button>&nbsp;<code class="w3-codespan">conditionize2</code>. A jQuery plugin for conditioning things</h1>
+            <h1><button class="w3-button w3-xlarge" onclick="w3Open()">☰</button>&nbsp;<code class="w3-codespan">conditionize2</code>. A jQuery plugin for conditioning things</h1>
 
             <h2>Different input types</h2>
-            
+
             <h3>Inputs</h3>
             <div id="inputs">
                 <div class="case">
@@ -59,10 +59,10 @@
                     </div>
                 </div>
                 <div class="case">
-                    <h4>Space and non-ACII chars at the condition</h4>
+                    <h4>Space and non-ASCII chars at the condition</h4>
                     <div class="item">
-                        <label>text input</label><input type="text" name="text-input5" placeholder="не ACII строка">
-                        <p class="conditional" data-condition="text-input5 === 'не ACII строка'">Wow! Even non-ACII chars are ok!</p>
+                        <label>text input</label><input type="text" name="text-input5" placeholder="не ASCII строка">
+                        <p class="conditional" data-condition="text-input5 === 'не ASCII строка'">Wow! Even non-ASCII chars are ok!</p>
                     </div>
                 </div>
                 <div class="case">
@@ -315,9 +315,9 @@
                         <label><input type="text" name="input-onkeyup" placeholder="foo"></label>
                         <p class="conditional-keyup" data-condition="input-onkeyup==='foo'">Works with keyup!</p>
                         <script>
-                            $('p.conditional-keyup').conditionize({
-                                updateOn:'keyup'
-                            });
+                            $( "p.conditional-keyup" ).conditionize( {
+                                updateOn: "keyup"
+                            } );
                         </script>
                     </div>
                 </div>
@@ -327,9 +327,9 @@
                         <label><input type="text" name="input-onkeyup2" placeholder="foo"></label>
                         <p class="conditional-keyup2" data-condition="input-onkeyup2==='foo'">Works with keyup array!</p>
                         <script>
-                            $('p.conditional-keyup2').conditionize({
-                                updateOn: ['keyup']
-                            });
+                            $( "p.conditional-keyup2" ).conditionize( {
+                                updateOn: [ "keyup" ]
+                            } );
                         </script>
                     </div>
                 </div>
@@ -339,9 +339,9 @@
                         <label><input type="text" name="input-onkeyup3" placeholder="foo"></label>
                         <p class="conditional-keyup3" data-condition="input-onkeyup3==='foo'">Works with many events in one string!</p>
                         <script>
-                            $('p.conditional-keyup3').conditionize({
-                                updateOn:['change', 'mouseleave']
-                            });
+                            $( "p.conditional-keyup3" ).conditionize( {
+                                updateOn: [ "change", "mouseleave" ]
+                            } );
                         </script>
                     </div>
                 </div>
@@ -352,15 +352,15 @@
                         <label><input type="checkbox" id="options-checkbox1">Some checkbox. You can toggle it. It does not work without the button.</label>
                         <p class="conditional-custom" data-condition="#options-checkbox1">This one will be updated only after the button click!</p>
                         <script>
-                            $('#button-custom').click(function(){
-                                $('#options-checkbox1').trigger({
+                            $( "#button-custom" ).click( function() {
+                                $( "#options-checkbox1" ).trigger( {
                                     type: "buttonWasClicked",
                                     message: "The button was clicked"
-                                });
-                            });
-                            $('p.conditional-custom').conditionize({
-                                updateOn:['buttonWasClicked']
-                            });
+                                } );
+                            } );
+                            $( "p.conditional-custom" ).conditionize( {
+                                updateOn: [ "buttonWasClicked" ]
+                            } );
                         </script>
                     </div>
                 </div>
@@ -370,9 +370,9 @@
                         <label><input type="checkbox" id="options-checkbox2">Some checkbox. You can toggle it.</label>
                         <p class="conditional-no-onload" data-condition="#options-checkbox2">This one is ignored on page load, but it works if you toggle the checkbox.</p>
                         <script>
-                            $('p.conditional-no-onload').conditionize({
+                            $( "p.conditional-no-onload" ).conditionize( {
                                 onload: false
-                            });
+                            } );
                         </script>
                     </div>
                 </div>
@@ -388,15 +388,15 @@
                         <label>Checked n times: </label><input id="check-cnt" type="text" value="0" disabled>
                         <label>Unchecked n times: </label><input id="uncheck-cnt" type="text" value="0" disabled>
                         <script>
-                            $('.conditional-customaction').conditionize({
+                            $( ".conditional-customaction" ).conditionize( {
                                 onload: false,
-                                ifTrue: function($section) {
-                                    $('#check-cnt').val(parseInt($('#check-cnt').val()) +1)
+                                ifTrue: function( $section ) {
+                                    $( "#check-cnt" ).val( parseInt( $( "#check-cnt" ).val() ) + 1 );
                                 },
-                                ifFalse: function($section) {
-                                    $('#uncheck-cnt').val(parseInt($('#uncheck-cnt').val()) +1)
+                                ifFalse: function( $section ) {
+                                    $( "#uncheck-cnt" ).val( parseInt( $( "#uncheck-cnt" ).val() ) + 1 );
                                 }
-                            });
+                            } );
                         </script>
                     </div>
                 </div>
@@ -411,26 +411,36 @@
                         <p class="conditional-alert-false4" data-condition="#actions-checkbox2"></p>
                         <p class="conditional-alert-false5" data-condition="#actions-checkbox2"></p>
                         <script>
-                            $('.conditional-alert-false1').conditionize({
+                            $( ".conditional-alert-false1" ).conditionize( {
                                 ifTrue: null,
-                                ifFalse: function($section) { alert("null works"); }
-                            });
-                            $('.conditional-alert-false2').conditionize({
+                                ifFalse: function( $section ) {
+ alert( "null works" );
+}
+                            } );
+                            $( ".conditional-alert-false2" ).conditionize( {
                                 ifTrue: false,
-                                ifFalse: function($section) { alert("false works"); }
-                            });
-                            $('.conditional-alert-false3').conditionize({
+                                ifFalse: function( $section ) {
+ alert( "false works" );
+}
+                            } );
+                            $( ".conditional-alert-false3" ).conditionize( {
                                 ifTrue: undefined,
-                                ifFalse: function($section) { alert("undefined works"); }
-                            });
-                            $('.conditional-alert-false4').conditionize({
+                                ifFalse: function( $section ) {
+ alert( "undefined works" );
+}
+                            } );
+                            $( ".conditional-alert-false4" ).conditionize( {
                                 ifTrue: "ignore",
-                                ifFalse: function($section) { alert("'ingnore' works"); }
-                            });
-                            $('.conditional-alert-false5').conditionize({
+                                ifFalse: function( $section ) {
+ alert( "'ingnore' works" );
+}
+                            } );
+                            $( ".conditional-alert-false5" ).conditionize( {
                                 ifTrue: [],
-                                ifFalse: function($section) { alert("[] works"); }
-                            });
+                                ifFalse: function( $section ) {
+ alert( "[] works" );
+}
+                            } );
                         </script>
                     </div>
                 </div>
@@ -445,26 +455,36 @@
                         <p class="conditional-alert-true4" data-condition="#actions-checkbox3"></p>
                         <p class="conditional-alert-true5" data-condition="#actions-checkbox3"></p>
                         <script>
-                            $('.conditional-alert-true1').conditionize({
-                                ifTrue: function($section) { alert("null works"); },
+                            $( ".conditional-alert-true1" ).conditionize( {
+                                ifTrue: function( $section ) {
+                                    alert( "null works" );
+                                },
                                 ifFalse: null
-                            });
-                            $('.conditional-alert-true2').conditionize({
-                                ifTrue: function($section) { alert("false works"); },
+                            } );
+                            $( ".conditional-alert-true2" ).conditionize( {
+                                ifTrue: function( $section ) {
+                                    alert( "false works" );
+                                },
                                 ifFalse: false
-                            });
-                            $('.conditional-alert-true3').conditionize({
-                                ifTrue: function($section) { alert("undefined works"); },
+                            } );
+                            $( ".conditional-alert-true3" ).conditionize( {
+                                ifTrue: function( $section ) {
+                                    alert( "undefined works" );
+                                },
                                 ifFalse: undefined
-                            });
-                            $('.conditional-alert-true4').conditionize({
-                                ifTrue: function($section) { alert("'ingnore' works"); },
+                            } );
+                            $( ".conditional-alert-true4" ).conditionize( {
+                                ifTrue: function( $section ) {
+                                    alert( "'ingnore' works" );
+                                },
                                 ifFalse: "ignore"
-                            });
-                            $('.conditional-alert-true5').conditionize({
-                                ifTrue: function($section) { alert("[] works"); },
+                            } );
+                            $( ".conditional-alert-true5" ).conditionize( {
+                                ifTrue: function( $section ) {
+                                    alert( "[] works" );
+                                },
                                 ifFalse: []
-                            });
+                            } );
                         </script>
                     </div>
                 </div>
@@ -479,14 +499,14 @@
                         <p class="conditional-buildin1" data-condition="#actions-checkbox4">Show if true, hide if false</p>
                         <p class="conditional-buildin2" data-condition="#actions-checkbox4">Hide if false, show if true</p>
                         <script>
-                            $('.conditional-buildin1').conditionize({
-                                ifTrue: 'show',
-                                ifFalse: 'hide'
-                            });
-                            $('.conditional-buildin2').conditionize({
-                                ifTrue: 'hide',
-                                ifFalse: 'show'
-                            });
+                            $( ".conditional-buildin1" ).conditionize( {
+                                ifTrue: "show",
+                                ifFalse: "hide"
+                            } );
+                            $( ".conditional-buildin2" ).conditionize( {
+                                ifTrue: "hide",
+                                ifFalse: "show"
+                            } );
                         </script>
                     </div>
                 </div>
@@ -519,10 +539,10 @@
                             </p>
                         </div>
                         <script>
-                            $('.conditional-buildin3').conditionize({
-                                ifTrue: 'clearFields',
-                                ifFalse: 'ignore'
-                            });
+                            $( ".conditional-buildin3" ).conditionize( {
+                                ifTrue: "clearFields",
+                                ifFalse: "ignore"
+                            } );
                         </script>
                     </div>
                 </div>
@@ -536,10 +556,10 @@
                             <input type="text" placeholder="type something...">
                         </div>
                         <script>
-                            $('.conditional-buildin4').conditionize({
-                                ifTrue: ["show"],
-                                ifFalse: ["hide", "clearFields"]
-                            });
+                            $( ".conditional-buildin4" ).conditionize( {
+                                ifTrue: [ "show" ],
+                                ifFalse: [ "hide", "clearFields" ]
+                            } );
                         </script>
                     </div>
                 </div>
@@ -551,33 +571,33 @@
                         <p class="conditional-buildin6" data-condition="#actions-checkbox7"></p>
                         <p class="conditional-buildin7" data-condition="#actions-checkbox7"></p>
                         <script>
-                            $('.conditional-buildin5').conditionize({
+                            $( ".conditional-buildin5" ).conditionize( {
                                 updateOn: "change",
                                 ifTrue: "trigger",
                                 ifFalse: "ignore"
-                            });
-                            $('.conditional-buildin5').change(function(){
-                                $(this).text($(this).text() + ' Change event occured!');
-                            });
+                            } );
+                            $( ".conditional-buildin5" ).change( function() {
+                                $( this ).text( $( this ).text() + " Change event occured!" );
+                            } );
 
-                            $('.conditional-buildin6').conditionize({
+                            $( ".conditional-buildin6" ).conditionize( {
                                 ifTrue: "trigger:click",
                                 ifFalse: "ignore"
-                            });
-                            $('.conditional-buildin6').click(function(){
-                                $(this).text($(this).text() + ' Click event occured!');
-                            });
+                            } );
+                            $( ".conditional-buildin6" ).click( function() {
+                                $( this ).text( $( this ).text() + " Click event occured!" );
+                            } );
 
-                            $('.conditional-buildin7').conditionize({
+                            $( ".conditional-buildin7" ).conditionize( {
                                 ifTrue: "trigger:click yourCustomEvent",
                                 ifFalse: "ignore"
-                            });
-                            $('.conditional-buildin7').on('yourCustomEvent', function(){
-                                $(this).text($(this).text() + ' "yourCustomEvent" event occured!');
-                            });
-                            $('.conditional-buildin7').click(function(){
-                                $(this).text($(this).text() + ' Click event occured!');
-                            });
+                            } );
+                            $( ".conditional-buildin7" ).on( "yourCustomEvent", function() {
+                                $( this ).text( $( this ).text() + " \"yourCustomEvent\" event occured!" );
+                            } );
+                            $( ".conditional-buildin7" ).click( function() {
+                                $( this ).text( $( this ).text() + " Click event occured!" );
+                            } );
                         </script>
                     </div>
                 </div>
@@ -609,27 +629,29 @@
                     <label>Times you finished to answer: </label>
                     <input type="text" disabled id="actions-counter8" value="0">
                     <script>
-                        $(".conditional-mix1").conditionize({
+                        $( ".conditional-mix1" ).conditionize( {
                             ifTrue: [
                                 "show",
-                                function($section) {
-                                    alert("Let's start! Toggle the checkbox to clear fields and start again.")
+                                function( $section ) {
+                                    alert( "Let's start! Toggle the checkbox to clear fields and start again." );
                                 }
                             ],
                             ifFalse: [
                                 "hide",
                                 "clearFields",
-                                function($section) {
-                                    $("#actions-counter8").val(parseInt($("#actions-counter8").val()) + 1);
+                                function( $section ) {
+                                    $( "#actions-counter8" ).val( parseInt( $( "#actions-counter8" ).val() ) + 1 );
                                 }
                             ]
-                        });
-                        $(".conditional-alert-mix2").conditionize({
+                        } );
+                        $( ".conditional-alert-mix2" ).conditionize( {
                             updateOn: "keyup",
-                            ifTrue: function($section) {alert("Expelliarmus!");},
+                            ifTrue: function( $section ) {
+alert( "Expelliarmus!" );
+},
                             ifFalse: "ignore"
-                        })
-                        $(".conditional-mix3,.conditional-mix4").conditionize();
+                        } );
+                        $( ".conditional-mix3,.conditional-mix4" ).conditionize();
                     </script>
                 </div>
             </div>
@@ -639,51 +661,51 @@
         <script src="https://www.w3schools.com/lib/w3codecolor.js"></script>
         <script>
             // Add html code to each example
-            $('div.item').each( function() {
-                var item = $(this).html();
-                var itemEscaped = item
-                var offset = parseInt(itemEscaped.search(/\S/));
-                var re = new RegExp( " {" + (offset-1) + "}( *)", "gi" );
-                itemEscaped = itemEscaped.replace(re, '$1').
-                    replace(/^\n */g, '').
-                    replace(/\s+$/g, '').
-                    replace(/</g, "&lt;").
-                    replace(/>/g, "&gt;")
-                $(this.parentNode).addClass(" w3-panel w3-card w3-light-grey w3-padding ")
-                $(this).before('<div class="w3-code htmlHigh notranslate"><pre>' + itemEscaped + '</pre></div>');
-                $(this).before('<h4>Result:</h4>');
+            $( "div.item" ).each( function() {
+                var item = $( this ).html();
+                var itemEscaped = item;
+                var offset = parseInt( itemEscaped.search( /\S/ ) );
+                var re = new RegExp( " {" + ( offset - 1 ) + "}( *)", "gi" );
+                itemEscaped = itemEscaped.replace( re, "$1" ).
+                    replace( /^\n */g, "" ).
+                    replace( /\s+$/g, "" ).
+                    replace( /</g, "&lt;" ).
+                    replace( />/g, "&gt;" );
+                $( this.parentNode ).addClass( " w3-panel w3-card w3-light-grey w3-padding " );
+                $( this ).before( "<div class=\"w3-code htmlHigh notranslate\"><pre>" + itemEscaped + "</pre></div>" );
+                $( this ).before( "<h4>Result:</h4>" );
             } );
             w3CodeColor();
         </script>
         <script>
             // Styling
-            $("input[type='checkbox']").addClass('w3-check');
-            $("input[type='text']").addClass('w3-input');
-            $("input[type='radio']").addClass('w3-radio');
-            $("select").addClass('w3-select');
-            $('p[class^="conditional"]').addClass('msg');
-            $('p[class^="conditional-alert"]').hide();
+            $( "input[type='checkbox']" ).addClass( "w3-check" );
+            $( "input[type='text']" ).addClass( "w3-input" );
+            $( "input[type='radio']" ).addClass( "w3-radio" );
+            $( "select" ).addClass( "w3-select" );
+            $( "p[class^=\"conditional\"]" ).addClass( "msg" );
+            $( "p[class^=\"conditional-alert\"]" ).hide();
         </script>
         <script>
             // Table of contents
             var index = 0;
-            $("h2,h3").each(function(){
-                $(this).attr('id', 'section-' + index);
+            $( "h2,h3" ).each( function() {
+                $( this ).attr( "id", "section-" + index );
                 var offset = "";
-                if ($( this ).is("h3")) {
+                if ( $( this ).is( "h3" ) ) {
                     offset = "&nbsp;&nbsp;&nbsp;&nbsp;";
                 }
-                $('#sidebar').append('<a href="#section-' + index+ '" class="w3-bar-item w3-button">' + offset + $(this).text() + '</a>');
+                $( "#sidebar" ).append( "<a href=\"#section-" + index + "\" class=\"w3-bar-item w3-button\">" + offset + $( this ).text() + "</a>" );
                 index += 1;
-            });
-            function w3_open() {
-              document.getElementById("sidebar").style.display = "block";
-              document.getElementById("page-content").style.marginLeft = "25%";
+            } );
+            function w3Open() {
+              document.getElementById( "sidebar" ).style.display = "block";
+              document.getElementById( "page-content" ).style.marginLeft = "25%";
             }
 
-            function w3_close() {
-              document.getElementById("sidebar").style.display = "none";
-              document.getElementById("page-content").style.marginLeft = "auto";
+            function w3Close() {
+              document.getElementById( "sidebar" ).style.display = "none";
+              document.getElementById( "page-content" ).style.marginLeft = "auto";
             }
         </script>
     </body>

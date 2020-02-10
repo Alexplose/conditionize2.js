@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../node_modules/qunit/qunit/qunit.css">
+    <script src="../node_modules/qunit/qunit/qunit.js"></script>
+    <script src="./tmp/jquery.js"></script>
+    <script src="./tmp/conditionize2.js"></script>
+    <style type="text/css"> p.conditional { display: block; }</style>
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixturex">
+        <h1>Selects</h1>
+        <div class="test-case single-value">
+            <h2 class="test-case__title">Reference by id</h2>
+            <div class="test-case__content">
+                <label>Select one</label>
+                <select id="select1" data-target-value="one">
+                    <option value=""></option>
+                    <option value="one">One</option>
+                    <option value="two">Two</option>
+                </select>
+                <p class="conditional" data-condition="#select1 === 'one'">Nice choice!</p>
+            </div>
+        </div>
+        <div class="test-case single-value">
+            <h2 class="test-case__title">Reference by name</h2>
+            <div class="test-case__content">
+                <label>Select2</label>
+                <select name="select2" data-target-value="two">
+                    <option value=""></option>
+                    <option value="one">One</option>
+                    <option value="two">Two</option>
+                </select>
+                <p class="conditional" data-condition="select2 === 'two'">Makes sense!</p>
+            </div>
+        </div>
+        <div class="test-case single-value-with-initial-value">
+            <h2 class="test-case__title">Select with initial value</h2>
+            <div class="test-case__content">
+                <label>Select3</label>
+                <select name="select3" data-target-value="three">
+                    <option value=""></option>
+                    <option value="one">One</option>
+                    <option value="two">Two</option>
+                    <option value="three" selected>Three</option>
+                </select>
+                <p class="conditional" data-condition="select3 === 'three'">Toggle me</p>
+            </div>
+        </div>
+        <div class="test-case multiple">
+            <h2 class="test-case__title">Select with multiple attribute</h2>
+            <div class="test-case__content">
+                <label>Select two</label>
+                <select name="select4" multiple>
+                    <option value=""></option>
+                    <option value="one">One</option>
+                    <option value="two">Two</option>
+                    <option value="three">Three</option>
+                </select>
+                <p class="conditional" data-condition="(select4).indexOf('two') !== -1">Don't you tiered of 'two's?</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        $( document ).ready( function() {
+            var documentTitle = $( "h1" )[ 0 ].innerHTML;
+            document.title = documentTitle;
+
+            QUnit.module( documentTitle );
+
+            $( "p.conditional" ).conditionize();
+
+            QUnit.test( "Single-value select without initial value", function( assert ) {
+                $( ".test-case.single-value" ).each( function() {
+                    var input = $( this ).find( "select" )[ 0 ];
+                    var p = $( this ).find( "p.conditional" )[ 0 ];
+                    var title = $( this ).find( ".test-case__title" )[ 0 ].innerHTML;
+
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (initial value)" );
+
+                    $( input ).val( $( input ).data( "target-value" ) ).trigger( "change" );
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "block", title + " (after change)" );
+                } );
+            } );
+
+            QUnit.test( "Single-value select with initial value", function( assert ) {
+                $( ".test-case.single-value-with-initial-value" ).each( function() {
+                    var input = $( this ).find( "select" )[ 0 ];
+                    var p = $( this ).find( "p.conditional" )[ 0 ];
+                    var title = $( this ).find( ".test-case__title" )[ 0 ].innerHTML;
+
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "block", title + " (initial value)" );
+
+                    $( input ).val( "" ).trigger( "change" );
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (after change)" );
+                } );
+            } );
+
+            QUnit.test( "Multiple select", function( assert ) {
+                $( ".test-case.multiple" ).each( function() {
+                    var input = $( this ).find( "select" )[ 0 ];
+                    var options = $( this ).find( "option" );
+                    var p = $( this ).find( "p.conditional" )[ 0 ];
+                    var title = $( this ).find( ".test-case__title" )[ 0 ].innerHTML;
+
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (initial state)" );
+
+                    $( options[ 0 ] ).attr( "selected", "selected" );
+                    $( input ).trigger( "change" );
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (first selected)" );
+
+                    $( options[ 1 ] ).attr( "selected", "selected" );
+                    $( input ).trigger( "change" );
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (second selected)" );
+
+                    $( options[ 2 ] ).attr( "selected", "selected" );
+                    $( input ).trigger( "change" );
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "block", title + " (third selected)" );
+
+                    $( options[ 3 ] ).attr( "selected", "selected" );
+                    $( input ).trigger( "change" );
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "block", title + " (fourth selected)" );
+
+                    $( input ).val( [ "", "one" ] ).trigger( "change" );
+                    $( p ).finish();
+                    assert.strictEqual( $( p ).css( "display" ), "none", title + " (third unselected)" );
+                } );
+            } );
+        } );
+    </script>
+</body>
+</html>
