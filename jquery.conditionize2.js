@@ -24,7 +24,10 @@
             // * a function like function($section) {...}
             // * or an array consisting of strings and/or function described above
             ifTrue: "show",
-            ifFalse: "hide"
+            ifFalse: "hide",
+
+            // Scope
+            scope: undefined
         }, options );
 
         // Prepare and validate settings
@@ -99,6 +102,10 @@
                 var selector = ( group.substring( 0, 1 ) === "#" ) ?
                     group :
                     "[name='" + group + "']";
+
+                if (settings.scope != undefined)
+                    selector = settings.scope + " " + selector;
+                
                 if ( $( selector ).length ) {
                     if ( allFields.indexOf( selector ) === -1 ) {
                         allFields.push( selector );
